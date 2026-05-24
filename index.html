@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Nusantara | Komunitas Developer Masa Depan</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        darkspace: '#020206',
+                        neoncyan: '#00f0ff',
+                        neonglow: '#9d00ff',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #020206;
+            overflow-x: hidden;
+        }
+        /* Glassmorphic UI Panel */
+        .glass-card {
+            background: rgba(8, 8, 20, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+        }
+        /* Cyber Neon Shadows */
+        .glow-neon {
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.3), inset 0 0 15px rgba(157, 0, 255, 0.15);
+        }
+        .text-neon {
+            text-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+        }
+        /* Custom Neon Glow Trail Cursor */
+        #trail-cursor {
+            width: 20px; height: 20px;
+            border: 2px solid #00f0ff; background-color: rgba(0, 240, 255, 0.05);
+            border-radius: 50%; position: fixed; transform: translate(-50%, -50%);
+            pointer-events: none; z-index: 9999;
+        }
+        /* Futuristic Background Matrix Line Grid */
+        .cyber-grid {
+            position: absolute; width: 100%; height: 100%; top: 0; left: 0;
+            background-image: linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px; background-position: center center;
+            mask-image: radial-gradient(circle, black 40%, transparent 85%);
+            -webkit-mask-image: radial-gradient(circle, black 40%, transparent 85%);
+            pointer-events: none;
+        }
+        /* Scanline Overlay Grid Effect */
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background-size: 100% 4px; z-index: 999; pointer-events: none;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #020206; }
+        ::-webkit-scrollbar-thumb { background: #00f0ff; border-radius: 10px; }
+    </style>
+</head>
+<body class="text-gray-200 font-poppins select-none antialiased">
+
+    <!-- Screen Shader Filters -->
+    <div class="scanlines"></div>
+    <div id="trail-cursor" class="hidden lg:block"></div>
+
+    <!-- 1. LOADING OVERLAY SCREEN -->
+    <div id="loader-screen" class="fixed inset-0 w-full h-full bg-[#020205] z-[9999] flex flex-col justify-center items-center gap-6">
+        <div class="relative w-20 h-20">
+            <div class="absolute inset-0 rounded-full border-2 border-t-neoncyan border-r-transparent border-b-neonglow border-l-transparent animate-spin"></div>
+            <div class="absolute inset-2 rounded-full border-2 border-b-neoncyan border-t-transparent border-l-neonglow border-r-transparent animate-spin" style="animation-direction: reverse; animation-duration: 1.5s;"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <i class="fa-solid fa-code text-xl text-neoncyan animate-pulse"></i>
+            </div>
+        </div>
+        <div class="font-orbitron text-xs tracking-[0.3em] text-neoncyan" id="loader-hud-text">BOOTING CODING NUSANTARA...</div>
+        
+        <!-- Interactive Manual Trigger Activation -->
+        <button id="btn-initialize-boot" class="hidden px-6 py-3 font-orbitron text-xs font-bold tracking-widest text-black bg-neoncyan rounded-md shadow-[0_0_20px_rgba(0,240,255,0.4)] hover:scale-105 transition-all duration-300">
+            INITIALIZE INTERACTION
+        </button>
+    </div>
+
+    <!-- MAIN DASHBOARD COMPONENT STRUCTURE -->
+    <div id="dashboard-space" class="opacity-0 transition-opacity duration-1000 min-h-screen relative flex flex-col justify-between overflow-hidden">
+        
+        <!-- Background Ambient Glow & Grid Grid -->
+        <div class="cyber-grid"></div>
+        <div class="absolute w-[500px] h-[500px] bg-neoncyan/5 rounded-full blur-[130px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+
+        <!-- HEADER BRANDING -->
+        <header class="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center relative z-20">
+            <div class="font-orbitron font-black text-sm tracking-[0.2em] text-white flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-neoncyan animate-ping"></span>
+                CN<span class="text-neoncyan">_SYS</span>
+            </div>
+            <div class="font-mono text-[10px] tracking-widest text-gray-500 hidden sm:block">ENVIRONMENT: ACTIVE_PROD_2026</div>
+        </header>
+
+        <!-- MAIN INTERACTIVE HERO CONTAINER -->
+        <main class="w-full max-w-4xl mx-auto px-6 py-4 flex flex-col items-center justify-center text-center relative z-20 flex-grow">
+            
+            <!-- 2. ROBOT INTERACTIVE 3D CANVAS WEBGL -->
+            <div class="w-full max-w-xs h-64 sm:h-72 relative flex items-center justify-center mb-4">
+                <div id="robot-container-3d" class="w-full h-full absolute inset-0"></div>
+                <!-- HUD Ring Radar Overlay Decorator -->
+                <div class="absolute w-44 h-44 border border-dashed border-neoncyan/20 rounded-full animate-spin" style="animation-duration: 25s"></div>
+                <div class="absolute w-52 h-52 border border-neonglow/10 rounded-full animate-spin" style="animation-direction: reverse; animation-duration: 15s"></div>
+            </div>
+
+            <!-- 3. ANIMATED TEXT TYPING CONTAINER -->
+            <div class="mb-6">
+                <h1 class="font-orbitron font-black text-4xl sm:text-6xl tracking-wider text-white mb-4">
+                    CODING <span class="text-transparent bg-clip-text bg-gradient-to-r from-neoncyan to-neonglow text-neon">NUSANTARA</span>
+                </h1>
+                <div class="min-h-[48px] max-w-xl mx-auto">
+                    <p id="typing-paragraph" class="text-xs sm:text-sm text-gray-400 font-sans leading-relaxed tracking-wide"></p>
+                </div>
+            </div>
+
+            <!-- 4. CONNECT CARD / LINK & JOIN SECTION -->
+            <div class="w-full max-w-md glass-card p-6 sm:p-8 rounded-2xl glow-neon border border-neoncyan/20 transform hover:scale-[1.01] transition-transform duration-300" data-aos="fade-up" data-aos-delay="200">
+                <div class="flex items-center justify-center gap-3 mb-3 text-emerald-400 text-sm font-semibold tracking-wider font-orbitron">
+                    <i class="fa-brands fa-whatsapp text-lg animate-bounce"></i> WHATSAPP GROUP HUB
+                </div>
+                <h3 class="text-white font-bold text-base sm:text-lg mb-2">Gabung komunitas kami sekarang</h3>
+                <p class="text-xs text-gray-500 font-sans mb-6 leading-relaxed">Dapatkan akses diskusi langsung bersama ribuan developer tanah air, sharing script project, update teknologi, dan kolaborasi sistem bersama.</p>
+                
+                <a href="https://chat.whatsapp.com/EEYOHJVrsCBIUws8hcG6Pm" target="_blank" id="btn-join-wa" class="w-full py-4 rounded-xl font-orbitron font-black text-xs tracking-[0.2em] text-black bg-neoncyan shadow-[0_0_20px_rgba(0,240,255,0.4)] block hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.8)] transition-all duration-300 transform active:scale-95">
+                    JOIN SEKARANG
+                </a>
+            </div>
+
+        </main>
+
+        <!-- SYSTEM FOOTER -->
+        <footer class="w-full max-w-7xl mx-auto px-6 py-6 text-center font-mono text-[10px] text-gray-600 relative z-20">
+            <div>© 2026 Coding Nusantara. Developed with High Interaction Architecture.</div>
+        </footer>
+    </div>
+
+    <!-- JavaScript Framework Bundlers via CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        // --- 1. AUDIO SYNTHESIZER AND VOICE MATRIX SYSTEM ---
+        let audioContextEngine = null;
+
+        function runStartupAudioBeep() {
+            if (!audioContextEngine) {
+                audioContextEngine = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            // Generate Synthesized Modern Welcome Tone
+            let now = audioContextEngine.currentTime;
+            let osc1 = audioContextEngine.createOscillator();
+            let osc2 = audioContextEngine.createOscillator();
+            let gain = audioContextEngine.createGain();
+
+            osc1.type = 'sine'; osc1.frequency.setValueAtTime(523.25, now); // C5 Tone
+            osc2.type = 'sine'; osc2.frequency.setValueAtTime(659.25, now + 0.1); // E5 Tone
+
+            gain.gain.setValueAtTime(0.04, now);
+            gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.5);
+
+            osc1.connect(gain); osc2.connect(gain);
+            gain.connect(audioContextEngine.destination);
+
+            osc1.start(now); osc2.start(now + 0.1);
+            osc1.stop(now + 0.5); osc2.stop(now + 0.5);
+        }
+
+        function triggerSpeechAI() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Clears any ongoing cues
+                let robotVoice = new SpeechSynthesisUtterance();
+                robotVoice.text = "Selamat datang di Group Coding Nusantara.";
+                robotVoice.lang = 'id-ID';
+                robotVoice.rate = 0.9;  // Slightly robotic pace
+                robotVoice.pitch = 1.1; // Friendly synthetic pitch
+                window.speechSynthesis.speak(robotVoice);
+            }
+        }
+
+        // --- 2. BOOT LOADING PIPELINE MANAGER ---
+        window.addEventListener('load', () => {
+            const labelText = document.getElementById('loader-hud-text');
+            const initBtn = document.getElementById('btn-initialize-boot');
+
+            // Autoplay policies require user interaction for audio context initialization in some browsers
+            labelText.innerText = "AWAITING CORE INITIALIZATION...";
+            initBtn.classList.remove('hidden');
+
+            initBtn.addEventListener('click', () => {
+                runStartupAudioBeep();
+                triggerSpeechAI();
+
+                gsap.to("#loader-screen", {
+                    y: '-100%',
+                    duration: 1,
+                    ease: 'power4.inOut',
+                    onComplete: () => {
+                        document.getElementById('loader-screen').style.display = 'none';
+                        const mainDashboard = document.getElementById('dashboard-space');
+                        mainDashboard.classList.remove('hidden');
+                        
+                        gsap.to(mainDashboard, {
+                            opacity: 1,
+                            duration: 0.8,
+                            onComplete: () => {
+                                AOS.init({ duration: 800, once: true });
+                                executeParagraphTyping();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+        // --- 3. THREE.JS 3D FRIENDLY ROBOT AI GENERATOR ---
+        const container3D = document.getElementById('robot-container-3d');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(40, container3D.clientWidth / container3D.clientHeight, 0.1, 100);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+
+        renderer.setSize(container3D.clientWidth, container3D.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container3D.appendChild(renderer.domElement);
+
+        // Building the Robot Mechanics using Primitive Meshes
+        const robotGroup = new THREE.Group();
+
+        // Main Head Capsule
+        const headGeo = new THREE.SphereGeometry(1, 32, 32);
+        headGeo.scale(1, 0.85, 0.9); // Make it slightly wider and friendly
+        const metalMat = new THREE.MeshStandardMaterial({ color: 0x0f1123, roughness: 0.2, metalness: 0.8 });
+        const headMesh = new THREE.Mesh(headGeo, metalMat);
+        robotGroup.add(headMesh);
+
+        // Friendly Digital Eyes Screen (Visor)
+        const visorGeo = new THREE.BoxGeometry(1.3, 0.3, 0.3);
+        const visorMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff });
+        const visorMesh = new THREE.Mesh(visorGeo, visorMat);
+        visorMesh.position.set(0, 0.05, 0.75);
+        robotGroup.add(visorMesh);
+
+        // Left & Right Cyber Ears Antenna
+        const earGeo = new THREE.CylinderGeometry(0.1, 0.1, 0.4, 16);
+        const earMat = new THREE.MeshStandardMaterial({ color: 0x1d2142, metalness: 0.7 });
+        const leftEar = new THREE.Mesh(earGeo, earMat);
+        leftEar.rotation.z = Math.PI / 2;
+        leftEar.position.set(-1.05, 0.05, 0);
+        const rightEar = leftEar.clone();
+        rightEar.position.x = 1.05;
+        robotGroup.add(leftEar); robotGroup.add(rightEar);
+
+        scene.add(robotGroup);
+        camera.position.z = 4.8;
+
+        // Dynamic Stage Lighting Setup
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+        scene.add(ambientLight);
+
+        const pointCyan = new THREE.PointLight(0x00f0ff, 2, 30);
+        pointCyan.position.set(2, 3, 4);
+        scene.add(pointCyan);
+
+        const pointPurple = new THREE.PointLight(0x9d00ff, 1.5, 30);
+        pointPurple.position.set(-2, -2, 2);
+        scene.add(pointPurple);
+
+        // Floating Idle Render Loop Animation
+        let timeClock = new THREE.Clock();
+        function renderSceneLoop() {
+            requestAnimationFrame(renderSceneLoop);
+            let time = timeClock.getElapsedTime();
+
+            // Floating Hover / Idle Movement Smooth Wave Simulation
+            robotGroup.position.y = Math.sin(time * 1.5) * 0.12;
+            robotGroup.rotation.y = Math.cos(time * 0.5) * 0.08;
+            
+            // Random Visor Screen Interaction Simulation (Blink Engine)
+            if (Math.random() > 0.985) {
+                visorMat.color.setHex(0x0a0a14); // Blinks off
+                setTimeout(() => visorMat.color.setHex(0x00f0ff), 80);
+            }
+
+            renderer.render(scene, camera);
+        }
+        renderSceneLoop();
+
+        // Responsive Resizing Redraw Trigger
+        window.addEventListener('resize', () => {
+            camera.aspect = container3D.clientWidth / container3D.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container3D.clientWidth, container3D.clientHeight);
+        });
+
+        // --- 4. TEXT TYPING ANIMATION MACHINE ---
+        const messageText = "Coding Nusantara adalah komunitas developer Indonesia yang berfokus pada belajar coding, sharing project, dan membangun masa depan teknologi bersama.";
+        let charCursor = 0;
+        
+        function executeParagraphTyping() {
+            if (charCursor < messageText.length) {
+                document.getElementById("typing-paragraph").innerHTML += messageText.charAt(charCursor);
+                charCursor++;
+                setTimeout(executeParagraphTyping, 25);
+            }
+        }
+
+        // --- 5. INTERACTIVE CURSOR TRAIL MATRIX ---
+        const trailCursor = document.getElementById('trail-cursor');
+        window.addEventListener('mousemove', (e) => {
+            gsap.to(trailCursor, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.1
+            });
+        });
+
+        // Expand cursor dynamic radius on entering active hover bounds
+        document.querySelectorAll('a, button').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                trailCursor.style.width = '35px';
+                trailCursor.style.height = '35px';
+                trailCursor.style.borderColor = '#9d00ff';
+            });
+            button.addEventListener('mouseleave', () => {
+                trailCursor.style.width = '20px';
+                trailCursor.style.height = '20px';
+                trailCursor.style.borderColor = '#00f0ff';
+            });
+        });
+    </script>
+</body>
+</html>
