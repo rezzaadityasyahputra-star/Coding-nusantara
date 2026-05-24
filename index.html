@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tabunganku - Premium Fintech Dashboard</title>
+    <title>Tabunganku - Premium Personal Finance Platform</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -12,17 +12,17 @@
             theme: {
                 extend: {
                     colors: {
-                        darkBg: '#090a0f',
-                        darkCard: 'rgba(17, 19, 31, 0.65)',
+                        darkBg: '#06070d',
+                        darkCard: 'rgba(13, 16, 27, 0.7)',
                         neonCyan: '#00f2fe',
                         neonBlue: '#4facfe',
                         neonPurple: '#7f00ff',
                         neonPink: '#e100ff',
                     },
                     boxShadow: {
-                        neonCyan: '0 0 15px rgba(0, 242, 254, 0.4)',
-                        neonPurple: '0 0 15px rgba(127, 0, 255, 0.4)',
-                        glass: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                        neonCyan: '0 0 20px rgba(0, 242, 254, 0.35)',
+                        neonPurple: '0 0 20px rgba(127, 0, 255, 0.35)',
+                        glass: '0 8px 32px 0 rgba(0, 0, 0, 0.4)',
                     }
                 }
             }
@@ -43,35 +43,34 @@
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             overflow-x: hidden;
-            background-color: #090a0f;
+            background-color: #06070d;
         }
-        /* Custom Scrollbar */
+        /* Custom Premium Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
-        ::-webkit-scrollbar-thumb { background: rgba(0, 242, 254, 0.3); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(127, 0, 255, 0.6); }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.01); }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 242, 254, 0.25); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(127, 0, 255, 0.5); }
         
-        /* Glassmorphism Blur */
+        /* Glassmorphism Dynamic Style */
         .glass-panel {
-            backdrop-filter: blur(16px) saturate(180%);
-            -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.07);
         }
         
-        /* Background Animated Gradient & Particles */
         .bg-glow-1 {
-            background: radial-gradient(circle, rgba(79,172,254,0.15) 0%, rgba(0,0,0,0) 70%);
+            background: radial-gradient(circle, rgba(0,242,254,0.12) 0%, rgba(0,0,0,0) 65%);
         }
         .bg-glow-2 {
-            background: radial-gradient(circle, rgba(225,0,255,0.12) 0%, rgba(0,0,0,0) 70%);
+            background: radial-gradient(circle, rgba(127,0,255,0.1) 0%, rgba(0,0,0,0) 65%);
         }
         
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+        @keyframes subtleFloat {
+            0% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-6px) scale(1.01); }
+            100% { transform: translateY(0px) scale(1); }
         }
-        .animate-float { animation: float 4s ease-in-out infinite; }
+        .animate-premium-float { animation: subtleFloat 5s ease-in-out infinite; }
     </style>
 </head>
 <body class="text-slate-100 antialiased selection:bg-neonCyan selection:text-darkBg">
@@ -82,25 +81,7 @@
         const { useState, useEffect, useRef } = React;
         const { motion, AnimatePresence } = Motion;
 
-        // --- MOCK INITIAL DATA ---
-        const initialTransactions = [
-            { id: 1, type: 'pemasukan', amount: 5000000, category: 'Gaji', note: 'Project Web Kelar', date: '2026-05-20' },
-            { id: 2, type: 'pengeluaran', amount: 350000, category: 'Makanan', note: 'Dinner Premium', date: '2026-05-22' },
-            { id: 3, type: 'pemasukan', amount: 1200000, category: 'Investasi', note: 'Dividen Saham', date: '2026-05-23' },
-            { id: 4, type: 'pengeluaran', amount: 150000, category: 'Hiburan', note: 'Nonton Bioskop IMAX', date: '2026-05-24' }
-        ];
-
-        const initialTargets = [
-            { id: 1, name: 'Setup PC Gaming 2026', target: 25000000, current: 15000000, deadline: '2026-12-31' },
-            { id: 2, name: 'Liburan ke Tokyo', target: 30000000, current: 8500000, deadline: '2027-04-15' }
-        ];
-
-        const initialWishlist = [
-            { id: 1, name: 'iPhone 17 Pro Max', price: 24000000, saved: 12000000, image: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=400&auto=format&fit=crop&q=60' },
-            { id: 2, name: 'Keyboard Mechanical Custom', price: 3500000, saved: 3500000, image: 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=400&auto=format&fit=crop&q=60' }
-        ];
-
-        // --- UTILS ---
+        // --- FORMATTERS ---
         const formatRupiah = (num) => {
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
         };
@@ -110,19 +91,19 @@
         };
 
         function App() {
-            // --- STATES ---
+            // --- APP ENGINE STATES ---
             const [isLoading, setIsLoading] = useState(true);
             const [isDarkMode, setIsDarkMode] = useState(true);
             const [activeTab, setActiveTab] = useState('Dashboard');
             const [isSidebarOpen, setIsSidebarOpen] = useState(false);
             const [toasts, setToasts] = useState([]);
             
-            // Core Data States
-            const [transactions, setTransactions] = useState(() => JSON.parse(localStorage.getItem('tb_txs')) || initialTransactions);
-            const [targets, setTargets] = useState(() => JSON.parse(localStorage.getItem('tb_targets')) || initialTargets);
-            const [wishlist, setWishlist] = useState(() => JSON.parse(localStorage.getItem('tb_wishlist')) || initialWishlist);
+            // --- CLEAN USER DATA STATES (MOCK-FREE) ---
+            const [transactions, setTransactions] = useState(() => JSON.parse(localStorage.getItem('tb_premium_txs')) || []);
+            const [targets, setTargets] = useState(() => JSON.parse(localStorage.getItem('tb_premium_targets')) || []);
+            const [wishlist, setWishlist] = useState(() => JSON.parse(localStorage.getItem('tb_premium_wishlist')) || []);
 
-            // Transaction Form State
+            // Transaction Interactive Form States
             const [txType, setTxType] = useState('pemasukan');
             const [txAmount, setTxAmount] = useState('');
             const [txCategory, setTxCategory] = useState('Gaji');
@@ -130,12 +111,12 @@
             const [txDate, setTxDate] = useState(new Date().toISOString().split('T')[0]);
             const [editingTxId, setEditingTxId] = useState(null);
 
-            // Filter & Search States
+            // Filter Engine States
             const [searchQuery, setSearchQuery] = useState('');
-            const [filterTime, setFilterTime] = useState('Semua');
             const [filterType, setFilterType] = useState('Semua');
+            const [filterTime, setFilterTime] = useState('Semua');
 
-            // Target & Wishlist Form States
+            // Goal & Wishlist Dynamic Input States
             const [newTargetName, setNewTargetName] = useState('');
             const [newTargetAmount, setNewTargetAmount] = useState('');
             const [newTargetDeadline, setNewTargetDeadline] = useState('');
@@ -143,536 +124,461 @@
             const [newWishPrice, setNewWishPrice] = useState('');
             const [newWishImage, setNewWishImage] = useState('');
 
-            // --- LOCAL STORAGE SYNC ---
-            useEffect(() => { localStorage.setItem('tb_txs', JSON.stringify(transactions)); }, [transactions]);
-            useEffect(() => { localStorage.setItem('tb_targets', JSON.stringify(targets)); }, [targets]);
-            useEffect(() => { localStorage.setItem('tb_wishlist', JSON.stringify(wishlist)); }, [wishlist]);
+            // --- DEEP STORAGE STORAGE WATCHER ---
+            useEffect(() => { localStorage.setItem('tb_premium_txs', JSON.stringify(transactions)); }, [transactions]);
+            useEffect(() => { localStorage.setItem('tb_premium_targets', JSON.stringify(targets)); }, [targets]);
+            useEffect(() => { localStorage.setItem('tb_premium_wishlist', JSON.stringify(wishlist)); }, [wishlist]);
 
-            // --- SIMULATE INITIAL LOADING ---
+            // Simulation Intro Loader
             useEffect(() => {
-                setTimeout(() => {
+                const timer = setTimeout(() => {
                     setIsLoading(false);
-                    showToast('Selamat Datang di Tabunganku v2026', 'info');
-                }, 1800);
+                }, 1600);
+                return () => clearTimeout(timer);
             }, []);
 
-            // Lucide Icons Render Trigger
-            useEffect(() => { if (!isLoading) lucide.createIcons(); }, [isLoading, activeTab, isSidebarOpen, transactions, targets, wishlist]);
+            useEffect(() => { if (!isLoading) lucide.createIcons(); }, [isLoading, activeTab, isSidebarOpen, transactions, targets, wishlist, txType]);
 
-            // --- TOAST SYSTEM ---
-            const showToast = (msg, type = 'success') => {
+            // --- PREMIUM TOAST SYSTEM ---
+            const triggerToast = (msg, type = 'success') => {
                 const id = Date.now();
                 setToasts(prev => [...prev, { id, msg, type }]);
-                setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
+                setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 3500);
             };
 
-            // --- FINANCIAL CALCULATION ---
+            // --- MATHEMATICAL RECKONING ---
             const totalPemasukan = transactions.filter(t => t.type === 'pemasukan').reduce((acc, curr) => acc + curr.amount, 0);
             const totalPengeluaran = transactions.filter(t => t.type === 'pengeluaran').reduce((acc, curr) => acc + curr.amount, 0);
             const totalSaldo = totalPemasukan - totalPengeluaran;
 
-            // --- HANDLERS ---
-            const handleAddTransaction = (e) => {
+            // --- MUTATION OPERATIONS ---
+            const saveTransactionHandler = (e) => {
                 e.preventDefault();
-                if (!txAmount || parseCurrency(txAmount) <= 0) return showToast('Nominal harus diisi dengan benar!', 'error');
+                const processedAmount = parseCurrency(txAmount);
+                if (!txAmount || processedAmount <= 0) return triggerToast('Silakan masukkan nominal valid!', 'error');
 
                 if (editingTxId) {
                     setTransactions(prev => prev.map(t => t.id === editingTxId ? {
-                        ...t, type: txType, amount: parseCurrency(txAmount), category: txCategory, note: txNote, date: txDate
+                        ...t, type: txType, amount: processedAmount, category: txCategory, note: txNote, date: txDate
                     } : t));
                     setEditingTxId(null);
-                    showToast('Transaksi berhasil diperbarui!');
+                    triggerToast('Catatan transaksi berhasil diperbarui');
                 } else {
-                    const newTx = {
+                    const newRecord = {
                         id: Date.now(),
                         type: txType,
-                        amount: parseCurrency(txAmount),
+                        amount: processedAmount,
                         category: txCategory,
                         note: txNote,
                         date: txDate
                     };
-                    setTransactions(prev => [newTx, ...prev]);
-                    showToast('Transaksi berhasil ditambahkan!');
+                    setTransactions(prev => [newRecord, ...prev]);
+                    triggerToast('Data transaksi berhasil direkam');
                 }
-                // Reset form
                 setTxAmount('');
                 setTxNote('');
             };
 
-            const handleEditTx = (tx) => {
+            const initiateEditProcess = (tx) => {
                 setEditingTxId(tx.id);
                 setTxType(tx.type);
                 setTxAmount(tx.amount.toString());
                 setTxCategory(tx.category);
                 setTxNote(tx.note);
                 setTxDate(tx.date);
-                if(activeTab !== 'Dashboard' && activeTab !== 'Pemasukan' && activeTab !== 'Pengeluaran') {
-                    setActiveTab('Dashboard');
-                }
+                if (activeTab !== 'Dashboard') setActiveTab('Dashboard');
             };
 
-            const handleDeleteTx = (id) => {
+            const removeTransaction = (id) => {
                 setTransactions(prev => prev.filter(t => t.id !== id));
-                showToast('Transaksi berhasil dihapus', 'error');
+                triggerToast('Data transaksi telah dihapus', 'error');
             };
 
-            const handleAddTarget = (e) => {
+            const buildTargetGoal = (e) => {
                 e.preventDefault();
-                if(!newTargetName || !newTargetAmount || !newTargetDeadline) return showToast('Harap isi semua field target!', 'error');
-                const nt = {
+                if (!newTargetName || !newTargetAmount || !newTargetDeadline) return triggerToast('Semua kolom target wajib diisi!', 'error');
+                const newGoal = {
                     id: Date.now(),
                     name: newTargetName,
                     target: parseCurrency(newTargetAmount),
                     current: 0,
                     deadline: newTargetDeadline
                 };
-                setTargets(prev => [...prev, nt]);
+                setTargets(prev => [...prev, newGoal]);
                 setNewTargetName('');
                 setNewTargetAmount('');
                 setNewTargetDeadline('');
-                showToast('Target Impian berhasil dibuat!');
+                triggerToast('Target finansial baru diinisialisasi');
             };
 
-            const handleAddWishlist = (e) => {
+            const pushToWishlist = (e) => {
                 e.preventDefault();
-                if(!newWishName || !newWishPrice) return showToast('Nama dan harga barang wajib diisi!', 'error');
-                const nw = {
+                if (!newWishName || !newWishPrice) return triggerToast('Nama dan Harga produk wajib diisi!', 'error');
+                const newWishItem = {
                     id: Date.now(),
                     name: newWishName,
                     price: parseCurrency(newWishPrice),
                     saved: 0,
                     image: newWishImage || 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=400&auto=format&fit=crop&q=60'
                 };
-                setWishlist(prev => [...prev, nw]);
+                setWishlist(prev => [...prev, newWishItem]);
                 setNewWishName('');
                 setNewWishPrice('');
                 setNewWishImage('');
-                showToast('Barang impian berhasil masuk wishlist!');
+                triggerToast('Barang impian berhasil didaftarkan');
             };
 
-            const simulateExport = (type) => {
-                showToast(`Sedang memproses export ke ${type}...`, 'info');
+            const exportDataFile = (formatType) => {
+                triggerToast(`Mengompilasi enkripsi data ${formatType.toUpperCase()}...`, 'info');
                 setTimeout(() => {
-                    showToast(`File Tabunganku_${type.toUpperCase()}_Berhasil_Diunduh!`);
-                }, 1500);
+                    triggerToast(`Unduhan Berhasil: Tabunganku_Report.${formatType}`);
+                }, 1200);
             };
 
-            // --- RENDER COMPONENT WIDGETS ---
             return (
-                <div className={`min-h-screen ${isDarkMode ? 'dark bg-darkBg text-slate-100' : 'bg-slate-50 text-slate-900 transition-colors duration-300'}`}>
+                <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'dark bg-darkBg text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
                     
-                    {/* Background Animation Layers */}
+                    {/* Ambient Cyber Neon Glow Background */}
                     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-                        <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-glow-1 rounded-full blur-[120px] animate-pulse"></div>
-                        <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-glow-2 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '6s' }}></div>
-                        {/* Futuristic Grid Line */}
-                        <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.03] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:30px_30px]"></div>
+                        <div className="absolute top-[-15%] left-[-10%] w-[60vw] h-[60vw] bg-glow-1 rounded-full blur-[130px] animate-pulse"></div>
+                        <div className="absolute bottom-[-15%] right-[-10%] w-[60vw] h-[60vw] bg-glow-2 rounded-full blur-[130px] animate-pulse" style={{ animationDuration: '7s' }}></div>
+                        <div className="absolute inset-0 opacity-[0.012] dark:opacity-[0.025] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:40px_40px]"></div>
                     </div>
 
-                    {/* SKELETON / LOADING SCREEN */}
+                    {/* FUTURISTIC SKELETON INTRO LOADING */}
                     <AnimatePresence>
                         {isLoading && (
                             <motion.div 
-                                className="fixed inset-0 bg-[#090a0f] z-50 flex flex-col justify-center items-center"
-                                exit={{ opacity: 0, transition: { duration: 0.6, ease: 'easeInOut' } }}
+                                className="fixed inset-0 bg-[#06070d] z-50 flex flex-col justify-center items-center"
+                                exit={{ opacity: 0, transition: { duration: 0.5 } }}
                             >
                                 <motion.div 
-                                    className="relative w-24 h-24 flex items-center justify-center mb-4"
-                                    initial={{ scale: 0.8, opacity: 0 }}
-                                    animate={{ scale: [1, 1.1, 1], opacity: 1 }}
-                                    transition={{ repeat: Infinity, duration: 1.5 }}
+                                    className="relative w-20 h-20 flex items-center justify-center mb-4"
+                                    animate={{ scale: [1, 1.05, 1] }}
+                                    transition={{ repeat: Infinity, duration: 2 }}
                                 >
-                                    <div className="absolute inset-0 rounded-full border-4 border-t-neonCyan border-r-neonPurple border-b-transparent border-l-transparent animate-spin"></div>
-                                    <i data-lucide="wallet" className="w-10 h-10 text-neonCyan animate-pulse"></i>
+                                    <div className="absolute inset-0 rounded-full border-2 border-t-neonCyan border-r-neonPurple border-b-transparent border-l-transparent animate-spin"></div>
+                                    <i data-lucide="fingerprint" className="w-8 h-8 text-neonCyan"></i>
                                 </motion.div>
-                                <motion.h1 
-                                    className="text-2xl font-extrabold tracking-wider bg-gradient-to-r from-neonCyan via-neonBlue to-neonPurple bg-clip-text text-transparent"
-                                    initial={{ letterSpacing: '0.1em', opacity: 0 }}
-                                    animate={{ letterSpacing: '0.2em', opacity: 1 }}
-                                    transition={{ duration: 1 }}
-                                >
-                                    TABUNGANKU OS
-                                </motion.h1>
-                                <p className="text-xs text-slate-500 mt-2 tracking-widest uppercase">Fintech Ecosystem v2.26</p>
+                                <h1 className="text-xl font-bold tracking-[0.3em] bg-gradient-to-r from-neonCyan to-neonPurple bg-clip-text text-transparent uppercase font-mono">TABUNGANKU OS</h1>
+                                <p className="text-[10px] text-slate-500 tracking-widest mt-1">SECURE BLOCKCHAIN ENGINE v2.26</p>
                             </motion.div>
                         )}
                     </AnimatePresence>
 
-                    {/* TOAST NOTIFICATION CONTAINER */}
-                    <div className="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none">
+                    {/* TOAST SYSTEM ENGINE */}
+                    <div className="fixed top-6 right-6 z-50 flex flex-col gap-3 pointer-events-none">
                         <AnimatePresence>
                             {toasts.map(t => (
                                 <motion.div
-                                    key={t.id}
-                                    layout
-                                    initial={{ opacity: 0, y: -20, scale: 0.9 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
-                                    className={`glass-panel pointer-events-auto flex items-center p-4 rounded-xl shadow-lg border-l-4 min-w-[280px] ${
-                                        t.type === 'error' ? 'border-red-500 bg-red-950/40 text-red-200' : 
-                                        t.type === 'info' ? 'border-neonBlue bg-blue-950/40 text-blue-200' : 'border-neonCyan bg-slate-900/80 text-neonCyan'
+                                    key={t.id} layout
+                                    initial={{ opacity: 0, x: 50, scale: 0.9 }}
+                                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.8 }}
+                                    className={`glass-panel pointer-events-auto flex items-center p-4 rounded-xl shadow-glass border-l-4 min-w-[300px] ${
+                                        t.type === 'error' ? 'border-red-500 bg-red-950/30 text-red-200' : 
+                                        t.type === 'info' ? 'border-neonBlue bg-blue-950/30 text-blue-200' : 'border-neonCyan bg-slate-900/80 text-neonCyan'
                                     }`}
                                 >
-                                    <i data-lucide={t.type === 'error' ? 'alert-triangle' : t.type === 'info' ? 'info' : 'check-circle'} className="w-5 h-5 mr-3 flex-shrink-0"></i>
-                                    <span className="text-sm font-medium">{t.msg}</span>
+                                    <i data-lucide={t.type === 'error' ? 'shield-alert' : t.type === 'info' ? 'cpu' : 'activity'} className="w-4 h-4 mr-3 flex-shrink-0"></i>
+                                    <span className="text-xs font-semibold tracking-wide">{t.msg}</span>
                                 </motion.div>
                             ))}
                         </AnimatePresence>
                     </div>
 
-                    {/* TOP NAVBAR */}
-                    <nav className="sticky top-0 z-40 glass-panel border-b border-white/5 backdrop-blur-md px-4 py-3 lg:px-8 flex justify-between items-center transition-all duration-300">
+                    {/* PREMIUM TRANSLUCENT TOP NAV BAR */}
+                    <nav className="sticky top-0 z-40 glass-panel border-b border-white/5 backdrop-blur-xl px-4 py-3.5 lg:px-8 flex justify-between items-center">
                         <div className="flex items-center gap-4">
                             <motion.button 
-                                whileTap={{ scale: 0.9 }}
+                                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                                 onClick={() => setIsSidebarOpen(true)}
                                 className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 transition-all border border-white/5 shadow-inner"
                             >
-                                <i data-lucide="menu" className="w-6 h-6"></i>
+                                <i data-lucide="align-left" className="w-5 h-5"></i>
                             </motion.button>
-                            <div className="flex items-center gap-2">
-                                <div className="p-2 rounded-xl bg-gradient-to-br from-neonCyan to-neonPurple shadow-neonCyan/20 shadow-lg">
-                                    <i data-lucide="trending-up" className="w-5 h-5 text-darkBg"></i>
+                            <div className="flex items-center gap-2.5">
+                                <div className="p-2 rounded-xl bg-gradient-to-tr from-neonCyan to-neonBlue shadow-neonCyan/20 shadow-md">
+                                    <i data-lucide="vault" className="w-4 h-4 text-darkBg"></i>
                                 </div>
-                                <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
-                                    Tabunganku<span className="text-neonCyan font-black text-xs ml-1 bg-neonCyan/10 px-1.5 py-0.5 rounded border border-neonCyan/20">2026</span>
+                                <span className="text-base font-bold tracking-tight text-white dark:text-white">
+                                    Tabunganku<span className="text-neonCyan font-mono text-[10px] ml-1.5 bg-neonCyan/10 px-1.5 py-0.5 rounded border border-neonCyan/20">2026</span>
                                 </span>
                             </div>
                         </div>
 
-                        {/* Right Elements */}
                         <div className="flex items-center gap-3">
                             <motion.button 
                                 whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                                 onClick={() => {
                                     setIsDarkMode(!isDarkMode);
                                     document.documentElement.classList.toggle('dark');
-                                    showToast(`Mode ${!isDarkMode ? 'Dark' : 'Light'} Diaktifkan`, 'info');
+                                    triggerToast(`Mode ${!isDarkMode ? 'Gelap' : 'Terang'} Diaktifkan`, 'info');
                                 }}
-                                className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 text-amber-400 dark:text-indigo-400"
+                                className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 text-amber-400 dark:text-neonCyan"
                             >
-                                <i data-lucide={isDarkMode ? "sun" : "moon"} className="w-5 h-5"></i>
+                                <i data-lucide={isDarkMode ? "sun" : "moon"} className="w-4 h-4"></i>
                             </motion.button>
-                            <div className="hidden sm:flex items-center gap-3 border-l border-white/10 pl-3">
-                                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-neonPurple to-neonPink p-[1px]">
-                                    <div className="w-full h-full rounded-xl bg-darkBg flex items-center justify-center font-bold text-xs text-neonCyan">RA</div>
-                                </div>
-                                <span className="text-xs font-semibold tracking-wide text-slate-400">Reza Aditya</span>
-                            </div>
                         </div>
                     </nav>
 
-                    {/* SIDEBAR COMPONENT */}
+                    {/* SIDEBAR NAVIGATION SHEET */}
                     <AnimatePresence>
                         {isSidebarOpen && (
                             <>
-                                {/* Overlay */}
-                                <motion.div 
-                                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                    onClick={() => setIsSidebarOpen(false)}
-                                    className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
-                                />
-                                {/* Content */}
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md" />
                                 <motion.div 
                                     initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
-                                    transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                                    className="fixed top-0 left-0 bottom-0 z-50 w-72 glass-panel bg-darkBg/80 backdrop-blur-xl border-r border-white/10 p-6 flex flex-col shadow-2xl"
+                                    transition={{ type: 'spring', damping: 24, stiffness: 190 }}
+                                    className="fixed top-0 left-0 bottom-0 z-50 w-72 glass-panel bg-darkBg/80 backdrop-blur-2xl border-r border-white/10 p-6 flex flex-col justify-between shadow-2xl"
                                 >
-                                    <div className="flex justify-between items-center mb-8">
-                                        <div className="flex items-center gap-2">
-                                            <i data-lucide="activity" className="w-5 h-5 text-neonPurple animate-pulse"></i>
-                                            <span className="font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-neonCyan to-neonPurple">MENU UTAMA</span>
+                                    <div className="space-y-8">
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex items-center gap-2">
+                                                <i data-lucide="command" className="w-4 h-4 text-neonPurple"></i>
+                                                <span className="font-bold text-xs tracking-widest text-slate-400 uppercase font-mono">WORKSPACE</span>
+                                            </div>
+                                            <button onClick={() => setIsSidebarOpen(false)} className="p-1.5 rounded-lg hover:bg-white/10 text-slate-400"><i data-lucide="chevrons-left" className="w-4 h-4"></i></button>
                                         </div>
-                                        <button onClick={() => setIsSidebarOpen(false)} className="p-1.5 rounded-lg hover:bg-white/10 text-slate-400"><i data-lucide="x" className="w-5 h-5"></i></button>
-                                    </div>
 
-                                    <div className="flex flex-col gap-2 flex-grow">
-                                        {[
-                                            { name: 'Dashboard', icon: 'layout-dashboard' },
-                                            { name: 'Pemasukan', icon: 'arrow-down-left' },
-                                            { name: 'Pengeluaran', icon: 'arrow-up-right' },
-                                            { name: 'Target Tabungan', icon: 'target' },
-                                            { name: 'Wish List', icon: 'heart' },
-                                            { name: 'Riwayat Transaksi', icon: 'history' },
-                                            { name: 'Laporan', icon: 'pie-chart' },
-                                            { name: 'Pengaturan', icon: 'sliders' }
-                                        ].map((item) => {
-                                            const isActive = activeTab === item.name;
-                                            return (
-                                                <motion.button
-                                                    key={item.name}
-                                                    whileHover={{ x: 4, backgroundColor: 'rgba(255,255,255,0.05)' }}
-                                                    onClick={() => {
-                                                        setActiveTab(item.name);
-                                                        setIsSidebarOpen(false);
-                                                        if(item.name === 'Pemasukan') { setTxType('pemasukan'); setActiveTab('Dashboard'); }
-                                                        if(item.name === 'Pengeluaran') { setTxType('pengeluaran'); setActiveTab('Dashboard'); }
-                                                    }}
-                                                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium ${
-                                                        isActive 
-                                                        ? 'bg-gradient-to-r from-neonBlue/20 to-neonPurple/20 text-neonCyan border-l-4 border-neonCyan shadow-neonCyan/10 shadow-md' 
-                                                        : 'text-slate-400 hover:text-slate-100'
-                                                    }`}
-                                                >
-                                                    <i data-lucide={item.icon} className={`w-5 h-5 ${isActive ? 'text-neonCyan' : ''}`}></i>
-                                                    {item.name}
-                                                </motion.button>
-                                            );
-                                        })}
+                                        <div className="flex flex-col gap-1.5">
+                                            {[
+                                                { name: 'Dashboard', icon: 'layout-grid' },
+                                                { name: 'Pemasukan', icon: 'arrow-down-circle' },
+                                                { name: 'Pengeluaran', icon: 'arrow-up-circle' },
+                                                { name: 'Target Tabungan', icon: 'target' },
+                                                { name: 'Wish List', icon: 'heart-handshake' },
+                                                { name: 'Riwayat Transaksi', icon: 'history' },
+                                                { name: 'Laporan', icon: 'bar-chart-3' },
+                                                { name: 'Pengaturan', icon: 'settings-2' }
+                                            ].map((item) => {
+                                                const isActive = activeTab === item.name;
+                                                return (
+                                                    <motion.button
+                                                        key={item.name} whileHover={{ x: 5, backgroundColor: 'rgba(255,255,255,0.03)' }}
+                                                        onClick={() => {
+                                                            if (item.name === 'Pemasukan') { setTxType('pemasukan'); setActiveTab('Dashboard'); }
+                                                            else if (item.name === 'Pengeluaran') { setTxType('pengeluaran'); setActiveTab('Dashboard'); }
+                                                            else { setActiveTab(item.name); }
+                                                            setIsSidebarOpen(false);
+                                                        }}
+                                                        className={`flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all text-xs font-semibold tracking-wide ${
+                                                            isActive 
+                                                            ? 'bg-gradient-to-r from-neonBlue/15 to-neonPurple/15 text-neonCyan border-l-2 border-neonCyan shadow-inner' 
+                                                            : 'text-slate-400 hover:text-slate-100'
+                                                        }`}
+                                                    >
+                                                        <i data-lucide={item.icon} className={`w-4 h-4 ${isActive ? 'text-neonCyan' : ''}`}></i>
+                                                        {item.name}
+                                                    </motion.button>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
-                                    
-                                    <div className="pt-4 border-t border-white/5 text-center text-[10px] text-slate-500 tracking-widest font-mono">
-                                        TABUNGANKU CORE v2.26
-                                    </div>
+                                    <div className="text-[10px] text-center text-slate-600 font-mono tracking-widest border-t border-white/5 pt-4">SYSTEM CORE SECURE</div>
                                 </motion.div>
                             </>
                         )}
                     </AnimatePresence>
 
-                    {/* MAIN CONTENT SPACE CONTAINER */}
-                    <main className="relative z-10 max-w-7xl mx-auto px-4 py-6 lg:px-8 space-y-8 pb-20">
+                    {/* MAIN CENTRALIZED ECOSYSTEM ARCHITECTURE */}
+                    <main className="relative z-10 max-w-7xl mx-auto px-4 py-8 lg:px-8 space-y-8 pb-24">
                         
-                        {/* VIEW METADATA BANNER */}
-                        <motion.div 
-                            initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
-                            className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-4"
-                        >
+                        {/* HEAD HEADER TITLE BLOCK */}
+                        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-white/5 pb-5">
                             <div>
-                                <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
-                                    {activeTab === 'Dashboard' ? 'Sistem Finansial' : activeTab}
-                                </h2>
-                                <p className="text-xs text-slate-400 mt-1">Sistem manajemen dan pelacakan tabungan personal otomatis modern.</p>
-                            </div>
-                            <div className="px-4 py-2 rounded-xl glass-panel text-xs font-mono font-bold text-neonCyan flex items-center gap-2 shadow-inner">
-                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                                LIVE STORAGE SYNC ACTIVE
+                                <h2 className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent font-mono uppercase">{activeTab}</h2>
+                                <p className="text-xs text-slate-400 mt-1">Data finansial murni berbasis entri manual personal tanpa interferensi otomatis otomatis.</p>
                             </div>
                         </motion.div>
 
-                        {/* --- PAGE: DASHBOARD --- */}
+                        {/* --- COMPONENT VIEW: DASHBOARD --- */}
                         {activeTab === 'Dashboard' && (
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                                 
-                                {/* Left/Center Column (Cards, Quick Actions, Charts) */}
+                                {/* LEFT CORE INTERACTIVE CODES */}
                                 <div className="lg:col-span-2 space-y-8">
                                     
-                                    {/* 3 Utama Metrics Cards */}
-                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                        {/* Card Saldo */}
-                                        <motion.div 
-                                            whileHover={{ y: -5 }}
-                                            className="glass-panel p-5 rounded-2xl relative overflow-hidden bg-gradient-to-br from-darkCard to-indigo-950/20 shadow-neonCyan/5 shadow-2xl group animate-float"
-                                        >
-                                            <div className="absolute -top-10 -right-10 w-24 h-24 bg-neonCyan/10 rounded-full blur-xl group-hover:bg-neonCyan/20 transition-all duration-500"></div>
-                                            <div className="flex justify-between items-start mb-4">
-                                                <span className="text-xs font-bold text-neonCyan uppercase tracking-widest">Total Saldo</span>
-                                                <div className="p-2 rounded-xl bg-neonCyan/10 text-neonCyan"><i data-lucide="wallet" className="w-4 h-4"></i></div>
-                                            </div>
-                                            <h3 className="text-2xl font-black tracking-tight text-white mb-1 shadow-neonCyan">{formatRupiah(totalSaldo)}</h3>
-                                            <span className="text-[10px] text-slate-400 flex items-center gap-1"><i data-lucide="sparkles" className="w-3 h-3 text-neonCyan"></i> Likuiditas Tersedia</span>
+                                    {/* THREE PRIMARY BALANCE METRICS */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                                        
+                                        <motion.div whileHover={{ y: -4 }} className="glass-panel p-5 rounded-2xl bg-gradient-to-br from-darkCard to-cyan-950/10 shadow-neonCyan/5 shadow-xl relative overflow-hidden animate-premium-float">
+                                            <div className="absolute top-0 right-0 p-3 opacity-20"><i data-lucide="wallet" className="w-8 h-8 text-neonCyan"></i></div>
+                                            <span className="text-[10px] font-bold text-neonCyan uppercase tracking-widest block mb-2">Total Tabungan</span>
+                                            <h3 className="text-xl font-black font-mono tracking-tight text-white">{formatRupiah(totalSaldo)}</h3>
                                         </motion.div>
 
-                                        {/* Card Pemasukan */}
-                                        <motion.div 
-                                            whileHover={{ y: -5 }}
-                                            className="glass-panel p-5 rounded-2xl relative overflow-hidden bg-gradient-to-br from-darkCard to-emerald-950/10 shadow-xl group"
-                                        >
-                                            <div className="absolute -top-10 -right-10 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl group-hover:bg-emerald-500/20 transition-all duration-500"></div>
-                                            <div className="flex justify-between items-start mb-4">
-                                                <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Total Pemasukan</span>
-                                                <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400"><i data-lucide="arrow-down-left" className="w-4 h-4"></i></div>
-                                            </div>
-                                            <h3 className="text-2xl font-black tracking-tight text-emerald-400 mb-1">{formatRupiah(totalPemasukan)}</h3>
-                                            <span className="text-[10px] text-slate-400">Akumulasi Transaksi Masuk</span>
+                                        <motion.div whileHover={{ y: -4 }} className="glass-panel p-5 rounded-2xl bg-gradient-to-br from-darkCard to-emerald-950/10 shadow-xl relative overflow-hidden">
+                                            <div className="absolute top-0 right-0 p-3 opacity-20"><i data-lucide="arrow-down-left" className="w-8 h-8 text-emerald-400"></i></div>
+                                            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block mb-2">Pemasukan</span>
+                                            <h3 className="text-xl font-black font-mono tracking-tight text-emerald-400">{formatRupiah(totalPemasukan)}</h3>
                                         </motion.div>
 
-                                        {/* Card Pengeluaran */}
-                                        <motion.div 
-                                            whileHover={{ y: -5 }}
-                                            className="glass-panel p-5 rounded-2xl relative overflow-hidden bg-gradient-to-br from-darkCard to-rose-950/10 shadow-xl group"
-                                        >
-                                            <div className="absolute -top-10 -right-10 w-24 h-24 bg-rose-500/10 rounded-full blur-xl group-hover:bg-rose-500/20 transition-all duration-500"></div>
-                                            <div className="flex justify-between items-start mb-4">
-                                                <span className="text-xs font-bold text-rose-400 uppercase tracking-widest">Total Pengeluaran</span>
-                                                <div className="p-2 rounded-xl bg-rose-500/10 text-rose-400"><i data-lucide="arrow-up-right" className="w-4 h-4"></i></div>
-                                            </div>
-                                            <h3 className="text-2xl font-black tracking-tight text-rose-400 mb-1">{formatRupiah(totalPengeluaran)}</h3>
-                                            <span className="text-[10px] text-slate-400">Dana Terkonsumsi</span>
+                                        <motion.div whileHover={{ y: -4 }} className="glass-panel p-5 rounded-2xl bg-gradient-to-br from-darkCard to-rose-950/10 shadow-xl relative overflow-hidden">
+                                            <div className="absolute top-0 right-0 p-3 opacity-20"><i data-lucide="arrow-up-right" className="w-8 h-8 text-rose-400"></i></div>
+                                            <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest block mb-2">Pengeluaran</span>
+                                            <h3 className="text-xl font-black font-mono tracking-tight text-rose-400">{formatRupiah(totalPengeluaran)}</h3>
                                         </motion.div>
+
                                     </div>
 
-                                    {/* INTERACTIVE CHART CONTAINER */}
-                                    <div className="glass-panel p-6 rounded-2xl bg-darkCard/50">
+                                    {/* LINE DYNAMIC ANALYTICS CHART CONTAINER */}
+                                    <div className="glass-panel p-6 rounded-2xl bg-darkCard/30">
                                         <div className="flex justify-between items-center mb-6">
                                             <div>
-                                                <h4 className="text-base font-bold text-white">Alur Arus Kas</h4>
-                                                <p className="text-xs text-slate-400">Analisis visual komparasi riwayat keuangan.</p>
-                                            </div>
-                                            <div className="flex gap-2 text-xs font-semibold">
-                                                <span className="flex items-center gap-1.5 text-neonCyan bg-neonCyan/10 px-2.5 py-1 rounded-lg border border-neonCyan/10"><span className="w-1.5 h-1.5 rounded-full bg-neonCyan"></span> Masuk</span>
-                                                <span className="flex items-center gap-1.5 text-neonPurple bg-neonPurple/10 px-2.5 py-1 rounded-lg border border-neonPurple/10"><span className="w-1.5 h-1.5 rounded-full bg-neonPurple"></span> Keluar</span>
+                                                <h4 className="text-sm font-bold text-white tracking-wide">Grafik Aliran Kas Terkini</h4>
+                                                <p className="text-[11px] text-slate-400">Visualisasi data kronologis berdasarkan entri transaksi teranyar.</p>
                                             </div>
                                         </div>
-                                        <div className="h-[280px] w-full relative">
-                                            <ChartContainer transactions={transactions} />
+                                        <div className="h-[260px] w-full">
+                                            <AnalyticsLineChart transactions={transactions} />
                                         </div>
                                     </div>
 
-                                    {/* TERBARU TRANSAKSI MINI TABLE */}
-                                    <div className="glass-panel p-6 rounded-2xl">
-                                        <div className="flex justify-between items-center mb-4">
-                                            <h4 className="text-base font-bold text-white">Aktivitas Transaksi Terakhir</h4>
-                                            <button onClick={() => setActiveTab('Riwayat Transaksi')} className="text-xs font-bold text-neonCyan hover:underline flex items-center gap-1">Lihat Semua <i data-lucide="chevron-right" className="w-3 h-3"></i></button>
+                                    {/* LAST THREE ENTRIES HISTORY TABLE MINI */}
+                                    <div className="glass-panel p-6 rounded-2xl space-y-4">
+                                        <div className="flex justify-between items-center">
+                                            <h4 className="text-sm font-bold text-white tracking-wide">Entri Mutasi Terakhir</h4>
+                                            <button onClick={() => setActiveTab('Riwayat Transaksi')} className="text-xs font-bold text-neonCyan hover:underline flex items-center gap-1">Seluruh Riwayat <i data-lucide="arrow-right" className="w-3 h-3"></i></button>
                                         </div>
                                         <div className="space-y-3">
                                             {transactions.slice(0, 3).map(t => (
-                                                <div key={t.id} className="flex justify-between items-center p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 group">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className={`p-2 rounded-xl ${t.type === 'pemasukan' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
-                                                            <i data-lucide={t.type === 'pemasukan' ? 'plus-circle' : 'minus-circle'} className="w-4 h-4"></i>
+                                                <div key={t.id} className="flex justify-between items-center p-3.5 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 group transition-all">
+                                                    <div className="flex items-center gap-3.5">
+                                                        <div className={`p-2 rounded-lg ${t.type === 'pemasukan' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
+                                                            <i data-lucide={t.type === 'pemasukan' ? 'download-cloud' : 'upload-cloud'} className="w-4 h-4"></i>
                                                         </div>
                                                         <div>
-                                                            <p className="text-sm font-semibold text-slate-200">{t.note || t.category}</p>
-                                                            <p className="text-[10px] text-slate-400 font-mono">{t.date} • {t.category}</p>
+                                                            <p className="text-xs font-bold text-slate-200">{t.note || t.category}</p>
+                                                            <p className="text-[10px] text-slate-500 font-mono mt-0.5">{t.date} • {t.category}</p>
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-4">
-                                                        <span className={`text-sm font-bold font-mono ${t.type === 'pemasukan' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                                                        <span className={`text-xs font-bold font-mono ${t.type === 'pemasukan' ? 'text-emerald-400' : 'text-rose-400'}`}>
                                                             {t.type === 'pemasukan' ? '+' : '-'}{formatRupiah(t.amount)}
                                                         </span>
-                                                        <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-all">
-                                                            <button onClick={() => handleEditTx(t)} className="p-1 hover:bg-white/10 rounded text-slate-400 hover:text-neonCyan"><i data-lucide="edit-3" className="w-3.5 h-3.5"></i></button>
-                                                            <button onClick={() => handleDeleteTx(t.id)} className="p-1 hover:bg-white/10 rounded text-slate-400 hover:text-red-400"><i data-lucide="trash-2" className="w-3.5 h-3.5"></i></button>
+                                                        <div className="hidden group-hover:flex items-center gap-1 transition-all">
+                                                            <button onClick={() => initiateEditProcess(t)} className="p-1 hover:bg-white/10 rounded text-neonCyan"><i data-lucide="pencil" className="w-3 h-3"></i></button>
+                                                            <button onClick={() => removeTransaction(t.id)} className="p-1 hover:bg-white/10 rounded text-red-400"><i data-lucide="trash-2" className="w-3 h-3"></i></button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             ))}
-                                            {transactions.length === 0 && <p className="text-sm text-center text-slate-500 py-4">Belum ada transaksi terekam.</p>}
+                                            {transactions.length === 0 && (
+                                                <div className="text-center py-6 text-slate-500 text-xs font-medium italic">Belum ada transaksi manual yang terekam. Masukkan data di panel kanan.</div>
+                                            )}
                                         </div>
                                     </div>
 
                                 </div>
 
-                                {/* Right Column (Form Input & Target Progress) */}
+                                {/* RIGHT PANEL SIDE ACTION INPUT FORM */}
                                 <div className="space-y-8">
                                     
-                                    {/* QUICK ACTION FORM */}
-                                    <div className="glass-panel p-6 rounded-2xl bg-gradient-to-b from-darkCard to-darkBg relative border border-white/10">
-                                        <div className="absolute top-0 right-10 w-20 h-[1px] bg-gradient-to-r from-transparent via-neonCyan to-transparent"></div>
-                                        <h4 className="text-base font-bold text-white mb-4 flex items-center gap-2">
-                                            <i data-lucide="zap" className="w-4 h-4 text-neonCyan animate-bounce"></i> 
-                                            {editingTxId ? 'Edit Transaksi' : 'Quick Record'}
+                                    <div className="glass-panel p-6 rounded-2xl bg-gradient-to-b from-darkCard to-transparent border border-white/10">
+                                        <h4 className="text-sm font-extrabold text-white tracking-widest uppercase mb-4 flex items-center gap-2">
+                                            <i data-lucide="plus-square" className="w-4 h-4 text-neonCyan"></i>
+                                            {editingTxId ? 'Modifikasi Transaksi' : 'Catat Transaksi'}
                                         </h4>
-                                        <form onSubmit={handleAddTransaction} className="space-y-4">
+                                        <form onSubmit={saveTransactionHandler} className="space-y-4 text-xs">
+                                            
                                             <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-white/5 border border-white/5">
                                                 <button 
                                                     type="button" onClick={() => setTxType('pemasukan')}
-                                                    className={`py-2 text-xs font-bold rounded-lg transition-all ${txType === 'pemasukan' ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-400 hover:text-slate-200'}`}
+                                                    className={`py-2 font-bold rounded-lg transition-all ${txType === 'pemasukan' ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/20 text-emerald-400 border border-emerald-500/20 shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
                                                 >
                                                     Pemasukan
                                                 </button>
                                                 <button 
                                                     type="button" onClick={() => setTxType('pengeluaran')}
-                                                    className={`py-2 text-xs font-bold rounded-lg transition-all ${txType === 'pengeluaran' ? 'bg-gradient-to-r from-rose-500/20 to-pink-500/20 text-rose-400 border border-rose-500/30' : 'text-slate-400 hover:text-slate-200'}`}
+                                                    className={`py-2 font-bold rounded-lg transition-all ${txType === 'pengeluaran' ? 'bg-gradient-to-r from-rose-500/20 to-pink-500/20 text-rose-400 border border-rose-500/20 shadow-sm' : 'text-slate-400 hover:text-slate-200'}`}
                                                 >
                                                     Pengeluaran
                                                 </button>
                                             </div>
 
                                             <div>
-                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Nominal Rupiah</label>
+                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1.5">Nominal Nilai (IDR)</label>
                                                 <div className="relative">
-                                                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-xs text-slate-500">Rp</span>
+                                                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-500 font-mono">Rp</span>
                                                     <input 
                                                         type="text" required placeholder="0" 
                                                         value={txAmount ? txAmount.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : ""}
                                                         onChange={(e) => setTxAmount(e.target.value.replace(/\./g, ''))}
-                                                        className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm font-bold text-white focus:outline-none focus:border-neonCyan focus:shadow-neonCyan/10 transition-all font-mono"
+                                                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-10 pr-4 font-bold text-white font-mono focus:outline-none focus:border-neonCyan transition-all text-sm"
                                                     />
                                                 </div>
                                             </div>
 
                                             <div className="grid grid-cols-2 gap-3">
                                                 <div>
-                                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Kategori</label>
-                                                    <select 
-                                                        value={txCategory} onChange={(e) => setTxCategory(e.target.value)}
-                                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-xs font-medium text-slate-200 focus:outline-none focus:border-neonCyan transition-all"
-                                                    >
+                                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1.5">Kategori</label>
+                                                    <select value={txCategory} onChange={(e) => setTxCategory(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 font-semibold text-slate-300 focus:outline-none">
                                                         {txType === 'pemasukan' ? (
                                                             <>
-                                                                <option value="Gaji" className="bg-darkBg">Gaji</option>
-                                                                <option value="Investasi" className="bg-darkBg">Investasi</option>
-                                                                <option value="Freelance" className="bg-darkBg">Freelance</option>
-                                                                <option value="Lainnya" className="bg-darkBg">Lainnya</option>
+                                                                <option value="Gaji" className="bg-darkBg">Gaji Principal</option>
+                                                                <option value="Investasi" className="bg-darkBg">Investasi Profit</option>
+                                                                <option value="Freelance" className="bg-darkBg">Side Hustle</option>
+                                                                <option value="Lainnya" className="bg-darkBg">Lain-lain</option>
                                                             </>
                                                         ) : (
                                                             <>
-                                                                <option value="Makanan" className="bg-darkBg">Makanan</option>
-                                                                <option value="Hiburan" className="bg-darkBg">Hiburan</option>
-                                                                <option value="Edukasi" className="bg-darkBg">Edukasi</option>
-                                                                <option value="Tagihan" className="bg-darkBg">Tagihan</option>
-                                                                <option value="Transport" className="bg-darkBg">Transport</option>
+                                                                <option value="Makanan" className="bg-darkBg">Konsumsi</option>
+                                                                <option value="Hiburan" className="bg-darkBg">Entertainment</option>
+                                                                <option value="Edukasi" className="bg-darkBg">Edukasi/Sains</option>
+                                                                <option value="Tagihan" className="bg-darkBg">Utilitas/Tagihan</option>
+                                                                <option value="Transport" className="bg-darkBg">Logistik/Transport</option>
                                                                 <option value="Lainnya" className="bg-darkBg">Lainnya</option>
                                                             </>
                                                         )}
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Tanggal</label>
-                                                    <input 
-                                                        type="date" required value={txDate} onChange={(e) => setTxDate(e.target.value)}
-                                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-xs font-semibold text-slate-200 focus:outline-none focus:border-neonCyan transition-all font-mono"
-                                                    />
+                                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1.5">Tanggal</label>
+                                                    <input type="date" required value={txDate} onChange={(e) => setTxDate(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 font-mono text-slate-300 focus:outline-none" />
                                                 </div>
                                             </div>
 
                                             <div>
-                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Catatan Tambahan</label>
-                                                <input 
-                                                    type="text" placeholder="Keterangan singkat..." value={txNote} onChange={(e) => setTxNote(e.target.value)}
-                                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-neonCyan transition-all"
-                                                />
+                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1.5">Catatan Khusus</label>
+                                                <input type="text" placeholder="Deskripsi peruntukan dana..." value={txNote} onChange={(e) => setTxNote(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-slate-300 focus:outline-none" />
                                             </div>
 
                                             <motion.button
-                                                whileHover={{ scale: 1.02, boxShadow: '0 0 15px rgba(0, 242, 254, 0.3)' }} whileTap={{ scale: 0.98 }}
+                                                whileHover={{ scale: 1.02, boxShadow: '0 0 15px rgba(0, 242, 254, 0.2)' }} whileTap={{ scale: 0.98 }}
                                                 type="submit"
-                                                className="w-full py-3 rounded-xl bg-gradient-to-r from-neonBlue to-neonCyan text-darkBg font-black text-xs uppercase tracking-widest transition-all mt-2"
+                                                className="w-full py-3 rounded-xl bg-gradient-to-r from-neonBlue to-neonCyan text-darkBg font-black uppercase tracking-widest text-[11px] mt-2"
                                             >
-                                                {editingTxId ? 'Update Transaksi' : 'Simpan Transaksi'}
+                                                {editingTxId ? 'Simpan Pembaruan' : 'Submit Log Transaksi'}
                                             </motion.button>
                                             {editingTxId && (
-                                                <button type="button" onClick={() => { setEditingTxId(null); setTxAmount(''); setTxNote(''); }} className="w-full text-center text-xs text-slate-400 hover:underline pt-1">Batal Edit</button>
+                                                <button type="button" onClick={() => { setEditingTxId(null); setTxAmount(''); setTxNote(''); }} className="w-full text-center text-slate-400 hover:underline mt-1 block">Batalkan Edit</button>
                                             )}
                                         </form>
                                     </div>
 
-                                    {/* TARGET PROGRESS OVERVIEW MINI CARD */}
-                                    <div className="glass-panel p-6 rounded-2xl bg-gradient-to-br from-darkCard to-purple-950/10">
-                                        <div className="flex justify-between items-center mb-4">
-                                            <h4 className="text-base font-bold text-white flex items-center gap-2"><i data-lucide="target" className="w-4 h-4 text-neonPurple"></i> Target Monitor</h4>
-                                            <button onClick={() => setActiveTab('Target Tabungan')} className="text-xs text-neonPurple font-bold hover:underline">Kelola</button>
+                                    {/* TARGET OVERVIEW SHORT SUMMARY COMPONENT */}
+                                    <div className="glass-panel p-5 rounded-2xl space-y-4">
+                                        <div className="flex justify-between items-center">
+                                            <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2"><i data-lucide="rocket" className="w-4 h-4 text-neonPurple"></i> Tracking Sasaran</h4>
+                                            <button onClick={() => setActiveTab('Target Tabungan')} className="text-xs font-bold text-neonPurple hover:underline">Kelola</button>
                                         </div>
-                                        <div className="space-y-4">
-                                            {targets.slice(0, 2).map(target => {
-                                                const pct = Math.min(Math.round((target.current / target.target) * 100), 100);
+                                        <div className="space-y-3">
+                                            {targets.slice(0, 2).map(g => {
+                                                const ratio = Math.min(Math.round((g.current / g.target) * 100), 100);
                                                 return (
-                                                    <div key={target.id} className="space-y-1.5">
-                                                        <div className="flex justify-between text-xs">
-                                                            <span className="font-semibold text-slate-300">{target.name}</span>
-                                                            <span className="font-bold font-mono text-neonCyan">{pct}%</span>
+                                                    <div key={g.id} className="space-y-1">
+                                                        <div className="flex justify-between text-xs font-medium">
+                                                            <span className="text-slate-300">{g.name}</span>
+                                                            <span className="font-bold text-neonCyan font-mono">{ratio}%</span>
                                                         </div>
-                                                        <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden p-[1px] border border-white/5">
-                                                            <div className="h-full bg-gradient-to-r from-neonBlue to-neonPurple rounded-full shadow-neonPurple/50 shadow-sm" style={{ width: `${pct}%` }}></div>
-                                                        </div>
-                                                        <div className="flex justify-between text-[10px] text-slate-500 font-mono">
-                                                            <span>{formatRupiah(target.current)}</span>
-                                                            <span>{formatRupiah(target.target)}</span>
+                                                        <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                                            <div className="h-full bg-gradient-to-r from-neonBlue to-neonPurple rounded-full" style={{ width: `${ratio}%` }}></div>
                                                         </div>
                                                     </div>
                                                 );
                                             })}
+                                            {targets.length === 0 && <p className="text-[11px] text-slate-500 italic text-center py-2">Belum ada target diatur.</p>}
                                         </div>
                                     </div>
 
@@ -680,199 +586,189 @@
                             </div>
                         )}
 
-                        {/* --- PAGE: TARGET TABUNGAN --- */}
+                        {/* --- COMPONENT VIEW: TARGET TABUNGAN --- */}
                         {activeTab === 'Target Tabungan' && (
-                            <div className="space-y-8">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div className="md:col-span-1 glass-panel p-6 rounded-2xl h-fit">
-                                        <h4 className="text-base font-bold text-white mb-4">Buat Target Baru</h4>
-                                        <form onSubmit={handleAddTarget} className="space-y-4">
-                                            <div>
-                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Nama Target Impian</label>
-                                                <input type="text" required placeholder="Contoh: Beli Laptop Baru" value={newTargetName} onChange={(e)=>setNewTargetName(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-neonPurple transition-all" />
-                                            </div>
-                                            <div>
-                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Nominal Target Dana</label>
-                                                <input type="text" required placeholder="Rp 0" value={newTargetAmount ? newTargetAmount.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : ""} onChange={(e)=>setNewTargetAmount(e.target.value.replace(/\./g, ''))} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-sm font-bold font-mono text-white focus:outline-none focus:border-neonPurple transition-all" />
-                                            </div>
-                                            <div>
-                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Tenggat Waktu (Deadline)</label>
-                                                <input type="date" required value={newTargetDeadline} onChange={(e)=>setNewTargetDeadline(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-neonPurple transition-all font-mono" />
-                                            </div>
-                                            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" className="w-full py-3 rounded-xl bg-gradient-to-r from-neonPurple to-neonPink text-white font-bold text-xs uppercase tracking-widest shadow-neonPurple/20 shadow-md">
-                                                Inisialisasi Target
-                                            </motion.button>
-                                        </form>
-                                    </div>
-                                    <div className="md:col-span-2 space-y-4">
-                                        <h4 className="text-base font-bold text-white">Daftar Resolusi Target & Goal</h4>
-                                        {targets.map(t => {
-                                            const pct = Math.min(Math.round((t.current / t.target) * 100), 100);
-                                            const remaining = Math.max(t.target - t.current, 0);
-                                            return (
-                                                <motion.div key={t.id} layout className="glass-panel p-6 rounded-2xl bg-gradient-to-r from-darkCard to-transparent relative group overflow-hidden">
-                                                    <div className="absolute top-0 right-0 p-4 font-mono text-[10px] text-slate-500">Target: {t.deadline}</div>
-                                                    <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
-                                                        <div>
-                                                            <h5 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
-                                                                <span className="w-2 h-2 rounded-full bg-neonPurple shadow-neonPurple shadow-sm"></span> {t.name}
-                                                            </h5>
-                                                            <p className="text-xs text-slate-400 font-medium">Sisa dana yang dibutuhkan: <span className="text-neonCyan font-mono font-bold">{formatRupiah(remaining)}</span></p>
-                                                        </div>
-                                                        <div className="text-left sm:text-right">
-                                                            <span className="text-2xl font-black font-mono text-transparent bg-clip-text bg-gradient-to-r from-neonCyan to-neonPurple">{pct}%</span>
-                                                            <p className="text-[9px] text-slate-500 font-mono uppercase tracking-widest">Tingkat Capaian</p>
-                                                        </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div className="glass-panel p-6 rounded-2xl h-fit">
+                                    <h4 className="text-sm font-bold text-white mb-4 uppercase tracking-wider font-mono">Setup Finansial Goal</h4>
+                                    <form onSubmit={buildTargetGoal} className="space-y-4 text-xs">
+                                        <div>
+                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Nama Target</label>
+                                            <input type="text" required placeholder="Contoh: Beli MacBook Pro M5" value={newTargetName} onChange={(e)=>setNewTargetName(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-neonPurple" />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Nominal Target Tabungan</label>
+                                            <input type="text" required placeholder="Rp 0" value={newTargetAmount ? newTargetAmount.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : ""} onChange={(e)=>setNewTargetAmount(e.target.value.replace(/\./g, ''))} className="w-full bg-white/5 border border-white/10 rounded-xl p-3 font-bold font-mono text-white focus:outline-none focus:border-neonPurple" />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Tenggat Batas Waktu</label>
+                                            <input type="date" required value={newTargetDeadline} onChange={(e)=>setNewTargetDeadline(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl p-3 font-mono text-white focus:outline-none focus:border-neonPurple" />
+                                        </div>
+                                        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" className="w-full py-3 rounded-xl bg-gradient-to-r from-neonPurple to-neonPink text-white font-extrabold uppercase tracking-widest text-[11px] shadow-neonPurple/20 shadow-md">
+                                            Kunci Target Finansial
+                                        </motion.button>
+                                    </form>
+                                </div>
+                                <div className="md:col-span-2 space-y-4">
+                                    <h4 className="text-sm font-bold text-white uppercase tracking-wider font-mono">Daftar Akumulasi Target</h4>
+                                    {targets.map(g => {
+                                        const percentage = Math.min(Math.round((g.current / g.target) * 100), 100);
+                                        return (
+                                            <motion.div key={g.id} layout className="glass-panel p-5 rounded-2xl bg-gradient-to-r from-darkCard to-transparent relative overflow-hidden group">
+                                                <div className="absolute top-4 right-4 font-mono text-[10px] text-slate-500">Batas: {g.deadline}</div>
+                                                <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-3">
+                                                    <div>
+                                                        <h5 className="text-base font-bold text-white flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-neonPurple"></span> {g.name}</h5>
+                                                        <p className="text-[11px] text-slate-400 mt-1">Sisa dana dibutuhkan: <span className="text-neonCyan font-mono font-bold">{formatRupiah(Math.max(g.target - g.current, 0))}</span></p>
                                                     </div>
-                                                    <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden p-[1px] border border-white/5 mb-3">
-                                                        <div className="h-full bg-gradient-to-r from-neonCyan via-neonBlue to-neonPurple rounded-full shadow-neonCyan/30 shadow-md animate-pulse" style={{ width: `${pct}%` }}></div>
+                                                    <div className="text-left sm:text-right">
+                                                        <span className="text-xl font-black font-mono text-transparent bg-clip-text bg-gradient-to-r from-neonCyan to-neonPurple">{percentage}%</span>
                                                     </div>
-                                                    <div className="flex justify-between items-center text-xs">
-                                                        <span className="text-slate-400 italic text-[11px]">
-                                                            {pct >= 100 ? '🎉 Selamat! Target dana impianmu sudah terpenuhi penuh!' : pct > 50 ? '🔥 Sudah lebih dari setengah jalan! Gass terus tabungannya!' : '🚀 Langkah awal yang hebat, mari konsisten menabung!'}
-                                                        </span>
-                                                        <div className="flex gap-2">
-                                                            <button 
-                                                                onClick={() => {
-                                                                    setTargets(prev => prev.map(item => item.id === t.id ? {...item, current: item.current + 500000} : item));
-                                                                    showToast('+Rp500.000 dimasukkan ke target');
-                                                                }}
-                                                                className="px-2.5 py-1.5 rounded-lg bg-neonCyan/10 border border-neonCyan/20 text-neonCyan font-bold text-[10px] uppercase hover:bg-neonCyan/20 transition-all"
-                                                            >
-                                                                +500k Isi
-                                                            </button>
-                                                            <button onClick={() => { setTargets(prev => prev.filter(item => item.id !== t.id)); showToast('Target dihapus', 'error'); }} className="p-1.5 hover:bg-red-500/10 rounded-lg text-slate-500 hover:text-red-400 transition-all"><i data-lucide="trash-2" className="w-4 h-4"></i></button>
-                                                        </div>
+                                                </div>
+                                                <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden mb-3 border border-white/5">
+                                                    <div className="h-full bg-gradient-to-r from-neonCyan via-neonBlue to-neonPurple rounded-full" style={{ width: `${percentage}%` }}></div>
+                                                </div>
+                                                <div className="flex justify-between items-center text-[11px]">
+                                                    <span className="text-slate-500 italic">
+                                                        {percentage >= 100 ? '🎉 Selamat! Target dana impianmu sudah terpenuhi penuh!' : percentage > 50 ? '🔥 Sudah setengah jalan terlewati! Pertahankan ritme!' : '🚀 Langkah awal yang hebat, mari konsisten menabung!'}
+                                                    </span>
+                                                    <div className="flex gap-2">
+                                                        <button 
+                                                            onClick={() => {
+                                                                setTargets(prev => prev.map(item => item.id === g.id ? {...item, current: item.current + 500000} : item));
+                                                                triggerToast('+Rp500.000 dialokasikan ke target');
+                                                            }}
+                                                            className="px-2.5 py-1.5 rounded-lg bg-neonCyan/10 border border-neonCyan/20 text-neonCyan font-bold text-[10px] uppercase hover:bg-neonCyan/20 transition-all font-mono"
+                                                        >
+                                                            +500k Entri
+                                                        </button>
+                                                        <button onClick={() => { setTargets(prev => prev.filter(item => item.id !== g.id)); triggerToast('Target dihapus', 'error'); }} className="p-1.5 bg-white/5 text-slate-500 hover:text-red-400 rounded-lg transition-all"><i data-lucide="trash-2" className="w-3.5 h-3.5"></i></button>
                                                     </div>
-                                                </motion.div>
-                                            );
-                                        })}
-                                        {targets.length === 0 && <p className="text-sm text-slate-500 py-6 text-center">Belum ada target keuangan aktif.</p>}
-                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        );
+                                    })}
+                                    {targets.length === 0 && <p className="text-xs text-slate-500 italic text-center py-8">Belum ada target finansial manual yang dikonfigurasi.</p>}
                                 </div>
                             </div>
                         )}
 
-                        {/* --- PAGE: WISH LIST --- */}
+                        {/* --- COMPONENT VIEW: WISH LIST --- */}
                         {activeTab === 'Wish List' && (
                             <div className="space-y-8">
-                                <div className="glass-panel p-6 rounded-2xl">
-                                    <h4 className="text-base font-bold text-white mb-4">Tambah Barang Impian Baru (Wishlist)</h4>
-                                    <form onSubmit={handleAddWishlist} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                                        <div>
+                                <div className="glass-panel p-5 rounded-2xl bg-darkCard/50">
+                                    <h4 className="text-sm font-bold text-white mb-4 uppercase font-mono tracking-wide">Inisialisasi Keinginan Barang</h4>
+                                    <form onSubmit={pushToWishlist} className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-4 items-end text-xs">
+                                        <div className="sm:col-span-1">
                                             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Nama Barang</label>
-                                            <input type="text" required placeholder="Misal: Sepatu Nike Air Max" value={newWishName} onChange={(e)=>setNewWishName(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-neonCyan transition-all" />
+                                            <input type="text" required placeholder="Contoh: Sepatu Custom Jordan" value={newWishName} onChange={(e)=>setNewWishName(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-white focus:outline-none" />
                                         </div>
                                         <div>
-                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Harga Barang Pasar</label>
-                                            <input type="text" required placeholder="Rp 0" value={newWishPrice ? newWishPrice.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : ""} onChange={(e)=>setNewWishPrice(e.target.value.replace(/\./g, ''))} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-xs font-bold font-mono text-white focus:outline-none focus:border-neonCyan transition-all" />
+                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Target Nilai Harga</label>
+                                            <input type="text" required placeholder="Rp 0" value={newWishPrice ? newWishPrice.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : ""} onChange={(e)=>setNewWishPrice(e.target.value.replace(/\./g, ''))} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 font-bold font-mono text-white focus:outline-none" />
                                         </div>
                                         <div>
-                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Link Gambar Produk (Opsional)</label>
-                                            <input type="text" placeholder="https://..." value={newWishImage} onChange={(e)=>setNewWishImage(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-neonCyan transition-all" />
+                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">URL Cover Produk Image (Opsional)</label>
+                                            <input type="text" placeholder="https://..." value={newWishImage} onChange={(e)=>setNewWishImage(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-white focus:outline-none" />
                                         </div>
-                                        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" className="w-full py-2.5 rounded-xl bg-gradient-to-r from-neonCyan to-neonBlue text-darkBg font-black text-xs uppercase tracking-widest shadow-lg">
-                                            Masukkan Wishlist
+                                        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" className="py-2.5 rounded-xl bg-gradient-to-r from-neonCyan to-neonBlue text-darkBg font-black uppercase tracking-widest text-[11px] shadow-lg">
+                                            Daftarkan Wishlist
                                         </motion.button>
                                     </form>
                                 </div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                                     {wishlist.map(w => {
-                                        const pct = Math.min(Math.round((w.saved / w.price) * 100), 100);
+                                        const currentRatio = Math.min(Math.round((w.saved / w.price) * 100), 100);
                                         return (
-                                            <motion.div key={w.id} whileHover={{ y: -6 }} className="glass-panel rounded-2xl overflow-hidden bg-darkCard border border-white/5 flex flex-col group relative">
-                                                <div className="w-full h-44 relative overflow-hidden bg-slate-900">
-                                                    <img src={w.image} alt={w.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                            <motion.div key={w.id} whileHover={{ y: -5 }} className="glass-panel rounded-2xl overflow-hidden bg-darkCard border border-white/5 flex flex-col justify-between group relative">
+                                                <div className="w-full h-40 relative bg-slate-900">
+                                                    <img src={w.image} alt={w.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                                     <div className="absolute inset-0 bg-gradient-to-t from-darkBg via-transparent to-transparent"></div>
-                                                    <button onClick={() => { setWishlist(prev => prev.filter(item => item.id !== w.id)); showToast('Barang wishlist dihapus', 'error'); }} className="absolute top-3 right-3 p-1.5 rounded-xl bg-black/60 backdrop-blur-md text-slate-400 hover:text-rose-400 border border-white/10 transition-all opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" className="w-4 h-4"></i></button>
+                                                    <button onClick={() => { setWishlist(prev => prev.filter(item => item.id !== w.id)); triggerToast('Wishlist dibuang', 'error'); }} className="absolute top-2.5 right-2.5 p-1.5 rounded-lg bg-black/60 text-slate-400 hover:text-rose-400 border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="trash-2" className="w-3.5 h-3.5"></i></button>
                                                 </div>
-                                                <div className="p-4 flex-grow flex flex-col justify-between space-y-4">
+                                                <div className="p-4 space-y-3">
                                                     <div>
-                                                        <h5 className="font-bold text-white text-base group-hover:text-neonCyan transition-colors line-clamp-1">{w.name}</h5>
+                                                        <h5 className="font-bold text-white text-sm line-clamp-1">{w.name}</h5>
                                                         <p className="text-xs font-mono font-bold text-slate-400 mt-1">{formatRupiah(w.price)}</p>
                                                     </div>
-                                                    <div className="space-y-1.5">
+                                                    <div className="space-y-1">
                                                         <div className="flex justify-between text-[10px] font-mono">
-                                                            <span className="text-slate-400">Progression</span>
-                                                            <span className="text-neonCyan font-bold">{pct}%</span>
+                                                            <span className="text-slate-500">Alokasi Dana</span>
+                                                            <span className="text-neonCyan font-bold">{currentRatio}%</span>
                                                         </div>
-                                                        <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                                                            <div className="h-full bg-gradient-to-r from-neonCyan to-neonBlue rounded-full" style={{ width: `${pct}%` }}></div>
-                                                        </div>
-                                                        <div className="pt-2 flex gap-1">
-                                                            <button 
-                                                                onClick={() => {
-                                                                    setWishlist(prev => prev.map(item => item.id === w.id ? {...item, saved: Math.min(item.saved + 250000, item.price)} : item));
-                                                                    showToast('Berhasil mengalokasikan tabungan wishlist');
-                                                                }}
-                                                                disabled={w.saved >= w.price}
-                                                                className="w-full py-1.5 rounded-lg bg-white/5 border border-white/10 text-[10px] text-slate-300 font-bold uppercase hover:bg-neonCyan hover:text-darkBg disabled:opacity-30 disabled:hover:bg-white/5 disabled:hover:text-slate-300 transition-all"
-                                                            >
-                                                                {w.saved >= w.price ? 'Terbeli ✓' : '+250k Tabung'}
-                                                            </button>
+                                                        <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                                                            <div className="h-full bg-gradient-to-r from-neonCyan to-neonBlue" style={{ width: `${currentRatio}%` }}></div>
                                                         </div>
                                                     </div>
+                                                    <button 
+                                                        onClick={() => {
+                                                            setWishlist(prev => prev.map(item => item.id === w.id ? {...item, saved: Math.min(item.saved + 200000, item.price)} : item));
+                                                            triggerToast('Berhasil menambahkan tabungan khusus item');
+                                                        }}
+                                                        disabled={w.saved >= w.price}
+                                                        className="w-full py-2 rounded-lg bg-white/5 border border-white/10 text-[10px] font-extrabold uppercase hover:bg-neonCyan hover:text-darkBg disabled:opacity-20 transition-all"
+                                                    >
+                                                        {w.saved >= w.price ? 'Terbeli ✓' : '+200k Simpan'}
+                                                    </button>
                                                 </div>
                                             </motion.div>
                                         );
                                     })}
-                                    {wishlist.length === 0 && <p className="text-sm text-slate-500 col-span-full py-8 text-center">Wishlist kamu masih kosong.</p>}
+                                    {wishlist.length === 0 && <p className="text-xs text-slate-500 italic text-center col-span-full py-8">Katalog wishlist kamu kosong.</p>}
                                 </div>
                             </div>
                         )}
 
-                        {/* --- PAGE: RIWAYAT TRANSAKSI --- */}
+                        {/* --- COMPONENT VIEW: RIWAYAT TRANSAKSI --- */}
                         {activeTab === 'Riwayat Transaksi' && (
-                            <div className="space-y-6">
-                                {/* Filters Row */}
+                            <div className="space-y-5">
                                 <div className="glass-panel p-4 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                    <div className="relative flex-grow max-w-md">
-                                        <i data-lucide="search" className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                                    <div className="relative flex-grow max-w-sm">
+                                        <i data-lucide="search" className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
                                         <input 
-                                            type="text" placeholder="Cari deskripsi transaksi..." value={searchQuery} onChange={(e)=>setSearchQuery(e.target.value)}
-                                            className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-xs font-medium text-slate-200 focus:outline-none focus:border-neonCyan transition-all"
+                                            type="text" placeholder="Cari entri catatan transaksi..." value={searchQuery} onChange={(e)=>setSearchQuery(e.target.value)}
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-9 pr-4 text-xs text-slate-200 focus:outline-none focus:border-neonCyan transition-all"
                                         />
                                     </div>
-                                    <div className="flex flex-wrap items-center gap-2">
-                                        <select value={filterType} onChange={(e)=>setFilterType(e.target.value)} className="bg-white/5 border border-white/10 rounded-xl p-2 text-xs text-slate-200 focus:outline-none font-medium">
-                                            <option value="Semua" className="bg-darkBg">Semua Tipe</option>
+                                    <div className="flex flex-wrap items-center gap-2 text-xs">
+                                        <select value={filterType} onChange={(e)=>setFilterType(e.target.value)} className="bg-white/5 border border-white/10 rounded-xl p-2 text-slate-300 focus:outline-none font-medium">
+                                            <option value="Semua" className="bg-darkBg">Semua Jenis</option>
                                             <option value="pemasukan" className="bg-darkBg">Pemasukan</option>
                                             <option value="pengeluaran" className="bg-darkBg">Pengeluaran</option>
                                         </select>
-                                        <button onClick={()=>simulateExport('pdf')} className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300 transition-all"><i data-lucide="file-text" className="w-3.5 h-3.5 text-red-400"></i> Export PDF</button>
-                                        <button onClick={()=>simulateExport('excel')} className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300 transition-all"><i data-lucide="file-spreadsheet" className="w-3.5 h-3.5 text-emerald-400"></i> Excel</button>
+                                        <button onClick={()=>exportDataFile('pdf')} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 font-bold text-slate-300"><i data-lucide="file-text" className="w-3.5 h-3.5 text-red-400"></i> PDF</button>
+                                        <button onClick={()=>exportDataFile('excel')} className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 font-bold text-slate-300"><i data-lucide="sheet" className="w-3.5 h-3.5 text-emerald-400"></i> Excel</button>
                                     </div>
                                 </div>
 
-                                {/* Table Area */}
                                 <div className="glass-panel rounded-2xl overflow-hidden border border-white/5">
                                     <div className="overflow-x-auto">
                                         <table className="w-full text-left border-collapse">
                                             <thead>
-                                                <tr className="border-b border-white/5 bg-white/[0.02] text-[10px] uppercase font-bold tracking-widest text-slate-400">
-                                                    <th className="p-4">Tanggal</th>
+                                                <tr className="border-b border-white/5 bg-white/[0.01] text-[10px] uppercase font-bold tracking-widest text-slate-400 font-mono">
+                                                    <th className="p-4">Tanggal Log</th>
                                                     <th className="p-4">Kategori</th>
-                                                    <th className="p-4">Catatan / Keterangan</th>
-                                                    <th className="p-4">Tipe</th>
-                                                    <th className="p-4 text-right">Nominal</th>
-                                                    <th className="p-4 text-center">Aksi</th>
+                                                    <th className="p-4">Deskripsi Catatan</th>
+                                                    <th className="p-4">Jenis</th>
+                                                    <th className="p-4 text-right">Nominal Angka</th>
+                                                    <th className="p-4 text-center">Tindakan</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-white/5 text-xs font-medium">
                                                 {transactions
                                                     .filter(t => {
-                                                        const matchSearch = t.note.toLowerCase().includes(searchQuery.toLowerCase()) || t.category.toLowerCase().includes(searchQuery.toLowerCase());
-                                                        const matchType = filterType === 'Semua' || t.type === filterType;
-                                                        return matchSearch && matchType;
+                                                        const matchesSearch = t.note.toLowerCase().includes(searchQuery.toLowerCase()) || t.category.toLowerCase().includes(searchQuery.toLowerCase());
+                                                        const matchesType = filterType === 'Semua' || t.type === filterType;
+                                                        return matchesSearch && matchesType;
                                                     })
                                                     .map(t => (
-                                                        <tr key={t.id} className="hover:bg-white/[0.02] transition-colors group">
+                                                        <tr key={t.id} className="hover:bg-white/[0.01] transition-colors group">
                                                             <td className="p-4 font-mono text-slate-400">{t.date}</td>
-                                                            <td className="p-4"><span className="px-2 py-1 rounded-md bg-white/5 text-slate-300 border border-white/5">{t.category}</span></td>
-                                                            <td className="p-4 text-slate-200 font-semibold">{t.note || '-'}</td>
+                                                            <td className="p-4"><span className="px-2 py-0.5 rounded bg-white/5 text-slate-300 border border-white/5">{t.category}</span></td>
+                                                            <td className="p-4 text-slate-200 font-bold">{t.note || '-'}</td>
                                                             <td className="p-4">
-                                                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${t.type === 'pemasukan' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
+                                                                <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${t.type === 'pemasukan' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
                                                                     {t.type}
                                                                 </span>
                                                             </td>
@@ -880,9 +776,9 @@
                                                                 {t.type === 'pemasukan' ? '+' : '-'}{formatRupiah(t.amount)}
                                                             </td>
                                                             <td className="p-4">
-                                                                <div className="flex justify-center gap-1.5 opacity-40 group-hover:opacity-100 transition-opacity">
-                                                                    <button onClick={() => handleEditTx(t)} className="p-1 hover:bg-white/10 rounded text-neonCyan"><i data-lucide="edit-3" className="w-4 h-4"></i></button>
-                                                                    <button onClick={() => handleDeleteTx(t.id)} className="p-1 hover:bg-white/10 rounded text-red-400"><i data-lucide="trash-2" className="w-4 h-4"></i></button>
+                                                                <div className="flex justify-center gap-1 opacity-20 group-hover:opacity-100 transition-opacity">
+                                                                    <button onClick={() => initiateEditProcess(t)} className="p-1 hover:bg-white/10 rounded text-neonCyan"><i data-lucide="edit" className="w-3.5 h-3.5"></i></button>
+                                                                    <button onClick={() => removeTransaction(t.id)} className="p-1 hover:bg-white/10 rounded text-red-400"><i data-lucide="trash-2" className="w-3.5 h-3.5"></i></button>
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -890,97 +786,77 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    {transactions.length === 0 && <p className="text-sm text-center text-slate-500 py-10">Tidak ditemukan records riwayat transaksi.</p>}
+                                    {transactions.length === 0 && <p className="text-xs text-center text-slate-500 py-10 font-medium italic">Tidak ditemukan riwayat log finansial manual.</p>}
                                 </div>
                             </div>
                         )}
 
-                        {/* --- PAGE: LAPORAN ANALISIS --- */}
+                        {/* --- COMPONENT VIEW: LAPORAN ANALISIS --- */}
                         {activeTab === 'Laporan' && (
-                            <div className="space-y-8">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div className="glass-panel p-6 rounded-2xl flex flex-col justify-between items-center bg-darkCard/40">
-                                        <div className="w-full text-left mb-4">
-                                            <h4 className="text-base font-bold text-white">Komposisi Transaksi Finansial</h4>
-                                            <p className="text-xs text-slate-400">Perbandingan persentase total arus dana.</p>
-                                        </div>
-                                        <div className="w-64 h-64 relative">
-                                            <PieChartContainer totalPemasukan={totalPemasukan} totalPengeluaran={totalPengeluaran} />
-                                        </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="glass-panel p-6 rounded-2xl flex flex-col justify-between items-center bg-darkCard/40">
+                                    <div className="w-full text-left mb-4">
+                                        <h4 className="text-sm font-bold text-white tracking-wide">Proporsi Pembagian Aliran Kas</h4>
+                                        <p className="text-xs text-slate-400">Rasio persentase perbandingan antara dana masuk dan keluar.</p>
                                     </div>
+                                    <div className="w-56 h-56 relative">
+                                        <DoughnutPieChart totalPemasukan={totalPemasukan} totalPengeluaran={totalPengeluaran} />
+                                    </div>
+                                </div>
 
-                                    <div className="glass-panel p-6 rounded-2xl flex flex-col justify-between space-y-4">
-                                        <div>
-                                            <h4 className="text-base font-bold text-white mb-1">Analisis Pengeluaran Pintar</h4>
-                                            <p className="text-xs text-slate-400">Review status efisiensi finansial otomatis.</p>
-                                        </div>
-                                        <div className="p-4 rounded-xl border border-white/5 bg-white/5 space-y-3">
-                                            <div className="flex items-center gap-3">
-                                                <div className="p-2 rounded-xl bg-neonPurple/10 text-neonPurple"><i data-lucide="shield-check" className="w-5 h-5"></i></div>
-                                                <div>
-                                                    <h5 className="text-xs font-bold text-slate-200 uppercase tracking-wide">Rasio Tabungan Aman</h5>
-                                                    <p className="text-sm font-semibold text-slate-400 mt-0.5">Rasio pengeluaran Anda saat ini berada pada tingkatan proporsional aman.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="border-t border-white/5 pt-4 space-y-2 text-xs">
-                                            <div className="flex justify-between"><span className="text-slate-400">Total Terhemat Bersih:</span> <span className="font-bold text-emerald-400 font-mono">{formatRupiah(totalSaldo)}</span></div>
-                                            <div className="flex justify-between"><span className="text-slate-400">Efisiensi Konsumsi:</span> <span className="font-bold text-neonCyan font-mono">{totalPemasukan > 0 ? Math.round((totalSaldo/totalPemasukan)*100) : 0}% Dana Tersimpan</span></div>
-                                        </div>
+                                <div className="glass-panel p-6 rounded-2xl flex flex-col justify-between space-y-4">
+                                    <div>
+                                        <h4 className="text-sm font-bold text-white mb-1">Rangkuman Diagnostik Manual</h4>
+                                        <p className="text-xs text-slate-400">Analisis rasio efisiensi pemanfaatan likuiditas.</p>
+                                    </div>
+                                    <div className="p-4 rounded-xl border border-white/5 bg-white/5 space-y-3 text-xs">
+                                        <div className="flex justify-between"><span className="text-slate-400">Bersih Tabungan:</span> <span className="font-bold text-emerald-400 font-mono">{formatRupiah(totalSaldo)}</span></div>
+                                        <div className="flex justify-between"><span className="text-slate-400">Persentase Efisiensi:</span> <span className="font-bold text-neonCyan font-mono">{totalPemasukan > 0 ? Math.round((totalSaldo/totalPemasukan)*100) : 0}% Amortisasi</span></div>
                                     </div>
                                 </div>
                             </div>
                         )}
 
-                        {/* --- PAGE: PENGATURAN --- */}
+                        {/* --- COMPONENT VIEW: PENGATURAN --- */}
                         {activeTab === 'Pengaturan' && (
-                            <div className="glass-panel p-6 rounded-2xl max-w-xl mx-auto space-y-6">
-                                <h4 className="text-base font-bold text-white mb-2">Konfigurasi Pengaturan Aplikasi</h4>
-                                <div className="space-y-4 text-xs font-medium">
-                                    <div className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
-                                        <div>
-                                            <p className="text-slate-200 font-bold">Simpan Data Otomatis LocalStorage</p>
-                                            <p className="text-[10px] text-slate-400 mt-0.5">Menyimpan data mutasi langsung pada memori browser.</p>
-                                        </div>
-                                        <span className="text-xs font-bold font-mono text-emerald-400">AKTIF / TRUE</span>
+                            <div className="glass-panel p-6 rounded-2xl max-w-md mx-auto space-y-5 text-xs">
+                                <h4 className="text-sm font-bold text-white mb-2 uppercase font-mono tracking-wide">Konfigurasi Pengaturan</h4>
+                                <div className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
+                                    <div>
+                                        <p className="text-slate-200 font-bold">Wipe Out Seluruh Database</p>
+                                        <p className="text-[10px] text-slate-500 mt-0.5">Menghapus bersih seluruh memori entri data aplikasi.</p>
                                     </div>
-                                    <div className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
-                                        <div>
-                                            <p className="text-slate-200 font-bold">Clear All System Database</p>
-                                            <p className="text-[10px] text-slate-400 mt-0.5">Menghapus seluruh rekaman riwayat transaksi awal.</p>
-                                        </div>
-                                        <button 
-                                            onClick={() => {
-                                                if(confirm('Apakah Anda yakin ingin menghapus seluruh data transaksi?')) {
-                                                    localStorage.clear();
-                                                    setTransactions([]);
-                                                    setTargets([]);
-                                                    setWishlist([]);
-                                                    showToast('Semua database dibersihkan!', 'error');
-                                                }
-                                            }}
-                                            className="px-3 py-1.5 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 font-bold uppercase text-[10px] hover:bg-red-500/40 transition-all"
-                                        >
-                                            Wipe Out Data
-                                        </button>
-                                    </div>
+                                    <button 
+                                        onClick={() => {
+                                            if (confirm('Apakah Anda yakin ingin mengosongkan kembali seluruh riwayat data secara permanen?')) {
+                                                localStorage.clear();
+                                                setTransactions([]);
+                                                setTargets([]);
+                                                setWishlist([]);
+                                                triggerToast('Seluruh database dibersihkan total!', 'error');
+                                            }
+                                        }}
+                                        className="px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 font-bold uppercase text-[10px] hover:bg-red-500/20 transition-all"
+                                    >
+                                        Wipe Out Data
+                                    </button>
                                 </div>
                             </div>
                         )}
 
                     </main>
 
-                    {/* FOOTER WIDGET */}
-                    <footer className="relative z-10 glass-panel border-t border-white/5 py-6 text-center text-xs text-slate-500 font-medium tracking-wide">
-                        &copy; 2026 Tabunganku Inc. Built with Premium Cyber UI/UX System Ecosystem. All rights reserved.
+                    {/* CORE MINIMALIST PREMIUM FOOTER */}
+                    <footer className="glass-panel border-t border-white/5 py-5 text-center text-[11px] text-slate-500 font-medium tracking-wider">
+                        &copy; 2026 Tabunganku Platform Engine • Premium Architecture Core UI. All rights reserved.
                     </footer>
 
                 </div>
             );
         }
 
-        // --- SUB-COMPONENT: LINE/BAR FINANCIAL CHART CONTAINER ---
-        function ChartContainer({ transactions }) {
+        // --- CORE GRAPH SUB-COMPONENT: LINE CHART ---
+        function AnalyticsLineChart({ transactions }) {
             const canvasRef = useRef(null);
             const chartInstance = useRef(null);
 
@@ -988,36 +864,35 @@
                 if (!canvasRef.current) return;
                 const ctx = canvasRef.current.getContext('2d');
                 
-                // Grouping Logic simple
-                const sortedTxs = [...transactions].reverse().slice(-7);
-                const labels = sortedTxs.map(t => t.date);
-                const dataIn = sortedTxs.map(t => t.type === 'pemasukan' ? t.amount : 0);
-                const dataOut = sortedTxs.map(t => t.type === 'pengeluaran' ? t.amount : 0);
+                const chronologicRecords = [...transactions].reverse().slice(-6);
+                const chartLabels = chronologicRecords.map(t => t.date);
+                const incomes = chronologicRecords.map(t => t.type === 'pemasukan' ? t.amount : 0);
+                const outcomes = chronologicRecords.map(t => t.type === 'pengeluaran' ? t.amount : 0);
 
                 if (chartInstance.current) { chartInstance.current.destroy(); }
 
                 chartInstance.current = new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: labels.length > 0 ? labels : ['Day 1', 'Day 2', 'Day 3'],
+                        labels: chartLabels.length > 0 ? chartLabels : ['Log Kosong'],
                         datasets: [
                             {
                                 label: 'Masuk',
-                                data: dataIn.length > 0 ? dataIn : [0,0,0],
+                                data: incomes.length > 0 ? incomes : [0],
                                 borderColor: '#00f2fe',
-                                borderWidth: 3,
-                                tension: 0.4,
-                                fill: false,
-                                pointBackgroundColor: '#00f2fe'
+                                borderWidth: 2.5,
+                                tension: 0.35,
+                                pointBackgroundColor: '#00f2fe',
+                                fill: false
                             },
                             {
                                 label: 'Keluar',
-                                data: dataOut.length > 0 ? dataOut : [0,0,0],
+                                data: outcomes.length > 0 ? outcomes : [0],
                                 borderColor: '#7f00ff',
-                                borderWidth: 3,
-                                tension: 0.4,
-                                fill: false,
-                                pointBackgroundColor: '#7f00ff'
+                                borderWidth: 2.5,
+                                tension: 0.35,
+                                pointBackgroundColor: '#7f00ff',
+                                fill: false
                             }
                         ]
                     },
@@ -1026,8 +901,8 @@
                         maintainAspectRatio: false,
                         plugins: { legend: { display: false } },
                         scales: {
-                            y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10 } } },
-                            x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10 } } }
+                            y: { grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 9 } } },
+                            x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 9 } } }
                         }
                     }
                 });
@@ -1038,8 +913,8 @@
             return <canvas ref={canvasRef}></canvas>;
         }
 
-        // --- SUB-COMPONENT: PIE CHART LAPORAN CONTAINER ---
-        function PieChartContainer({ totalPemasukan, totalPengeluaran }) {
+        // --- CORE GRAPH SUB-COMPONENT: DOUGHNUT PIE CHART ---
+        function DoughnutPieChart({ totalPemasukan, totalPengeluaran }) {
             const canvasRef = useRef(null);
             const chartInstance = useRef(null);
 
@@ -1056,8 +931,7 @@
                         datasets: [{
                             data: [totalPemasukan || 1, totalPengeluaran || 0],
                             backgroundColor: ['#00f2fe', '#7f00ff'],
-                            borderWidth: 0,
-                            hoverOffset: 4
+                            borderWidth: 0
                         }]
                     },
                     options: {
@@ -1073,7 +947,6 @@
             return <canvas ref={canvasRef}></canvas>;
         }
 
-        // Render Application Initializer
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
