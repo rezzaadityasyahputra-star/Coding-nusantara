@@ -1,355 +1,1081 @@
 <!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
+<html lang="id" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coding Nusantara | Komunitas Developer Masa Depan</title>
+    <title>Tabunganku - Premium Fintech Dashboard</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- AOS Animation Library -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: {
-                        orbitron: ['Orbitron', 'sans-serif'],
-                        poppins: ['Poppins', 'sans-serif'],
-                    },
                     colors: {
-                        darkspace: '#020206',
-                        neoncyan: '#00f0ff',
-                        neonglow: '#9d00ff',
+                        darkBg: '#090a0f',
+                        darkCard: 'rgba(17, 19, 31, 0.65)',
+                        neonCyan: '#00f2fe',
+                        neonBlue: '#4facfe',
+                        neonPurple: '#7f00ff',
+                        neonPink: '#e100ff',
+                    },
+                    boxShadow: {
+                        neonCyan: '0 0 15px rgba(0, 242, 254, 0.4)',
+                        neonPurple: '0 0 15px rgba(127, 0, 255, 0.4)',
+                        glass: '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
                     }
                 }
             }
         }
     </script>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- React & Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Framer Motion -->
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            background-color: #020206;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             overflow-x: hidden;
+            background-color: #090a0f;
         }
-        /* Glassmorphic UI Panel */
-        .glass-card {
-            background: rgba(8, 8, 20, 0.65);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 240, 255, 0.15);
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 242, 254, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(127, 0, 255, 0.6); }
+        
+        /* Glassmorphism Blur */
+        .glass-panel {
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        /* Cyber Neon Shadows */
-        .glow-neon {
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.3), inset 0 0 15px rgba(157, 0, 255, 0.15);
+        
+        /* Background Animated Gradient & Particles */
+        .bg-glow-1 {
+            background: radial-gradient(circle, rgba(79,172,254,0.15) 0%, rgba(0,0,0,0) 70%);
         }
-        .text-neon {
-            text-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+        .bg-glow-2 {
+            background: radial-gradient(circle, rgba(225,0,255,0.12) 0%, rgba(0,0,0,0) 70%);
         }
-        /* Custom Neon Glow Trail Cursor */
-        #trail-cursor {
-            width: 20px; height: 20px;
-            border: 2px solid #00f0ff; background-color: rgba(0, 240, 255, 0.05);
-            border-radius: 50%; position: fixed; transform: translate(-50%, -50%);
-            pointer-events: none; z-index: 9999;
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
         }
-        /* Futuristic Background Matrix Line Grid */
-        .cyber-grid {
-            position: absolute; width: 100%; height: 100%; top: 0; left: 0;
-            background-image: linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px; background-position: center center;
-            mask-image: radial-gradient(circle, black 40%, transparent 85%);
-            -webkit-mask-image: radial-gradient(circle, black 40%, transparent 85%);
-            pointer-events: none;
-        }
-        /* Scanline Overlay Grid Effect */
-        .scanlines {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
-            background-size: 100% 4px; z-index: 999; pointer-events: none;
-        }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #020206; }
-        ::-webkit-scrollbar-thumb { background: #00f0ff; border-radius: 10px; }
+        .animate-float { animation: float 4s ease-in-out infinite; }
     </style>
 </head>
-<body class="text-gray-200 font-poppins select-none antialiased">
+<body class="text-slate-100 antialiased selection:bg-neonCyan selection:text-darkBg">
 
-    <!-- Screen Shader Filters -->
-    <div class="scanlines"></div>
-    <div id="trail-cursor" class="hidden lg:block"></div>
+    <div id="root"></div>
 
-    <!-- 1. LOADING OVERLAY SCREEN -->
-    <div id="loader-screen" class="fixed inset-0 w-full h-full bg-[#020205] z-[9999] flex flex-col justify-center items-center gap-6">
-        <div class="relative w-20 h-20">
-            <div class="absolute inset-0 rounded-full border-2 border-t-neoncyan border-r-transparent border-b-neonglow border-l-transparent animate-spin"></div>
-            <div class="absolute inset-2 rounded-full border-2 border-b-neoncyan border-t-transparent border-l-neonglow border-r-transparent animate-spin" style="animation-direction: reverse; animation-duration: 1.5s;"></div>
-            <div class="absolute inset-0 flex items-center justify-center">
-                <i class="fa-solid fa-code text-xl text-neoncyan animate-pulse"></i>
-            </div>
-        </div>
-        <div class="font-orbitron text-xs tracking-[0.3em] text-neoncyan" id="loader-hud-text">BOOTING CODING NUSANTARA...</div>
-        
-        <!-- Interactive Manual Trigger Activation -->
-        <button id="btn-initialize-boot" class="hidden px-6 py-3 font-orbitron text-xs font-bold tracking-widest text-black bg-neoncyan rounded-md shadow-[0_0_20px_rgba(0,240,255,0.4)] hover:scale-105 transition-all duration-300">
-            INITIALIZE INTERACTION
-        </button>
-    </div>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const { motion, AnimatePresence } = Motion;
 
-    <!-- MAIN DASHBOARD COMPONENT STRUCTURE -->
-    <div id="dashboard-space" class="opacity-0 transition-opacity duration-1000 min-h-screen relative flex flex-col justify-between overflow-hidden">
-        
-        <!-- Background Ambient Glow & Grid Grid -->
-        <div class="cyber-grid"></div>
-        <div class="absolute w-[500px] h-[500px] bg-neoncyan/5 rounded-full blur-[130px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+        // --- MOCK INITIAL DATA ---
+        const initialTransactions = [
+            { id: 1, type: 'pemasukan', amount: 5000000, category: 'Gaji', note: 'Project Web Kelar', date: '2026-05-20' },
+            { id: 2, type: 'pengeluaran', amount: 350000, category: 'Makanan', note: 'Dinner Premium', date: '2026-05-22' },
+            { id: 3, type: 'pemasukan', amount: 1200000, category: 'Investasi', note: 'Dividen Saham', date: '2026-05-23' },
+            { id: 4, type: 'pengeluaran', amount: 150000, category: 'Hiburan', note: 'Nonton Bioskop IMAX', date: '2026-05-24' }
+        ];
 
-        <!-- HEADER BRANDING -->
-        <header class="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center relative z-20">
-            <div class="font-orbitron font-black text-sm tracking-[0.2em] text-white flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-neoncyan animate-ping"></span>
-                CN<span class="text-neoncyan">_SYS</span>
-            </div>
-            <div class="font-mono text-[10px] tracking-widest text-gray-500 hidden sm:block">ENVIRONMENT: ACTIVE_PROD_2026</div>
-        </header>
+        const initialTargets = [
+            { id: 1, name: 'Setup PC Gaming 2026', target: 25000000, current: 15000000, deadline: '2026-12-31' },
+            { id: 2, name: 'Liburan ke Tokyo', target: 30000000, current: 8500000, deadline: '2027-04-15' }
+        ];
 
-        <!-- MAIN INTERACTIVE HERO CONTAINER -->
-        <main class="w-full max-w-4xl mx-auto px-6 py-4 flex flex-col items-center justify-center text-center relative z-20 flex-grow">
+        const initialWishlist = [
+            { id: 1, name: 'iPhone 17 Pro Max', price: 24000000, saved: 12000000, image: 'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=400&auto=format&fit=crop&q=60' },
+            { id: 2, name: 'Keyboard Mechanical Custom', price: 3500000, saved: 3500000, image: 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=400&auto=format&fit=crop&q=60' }
+        ];
+
+        // --- UTILS ---
+        const formatRupiah = (num) => {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
+        };
+
+        const parseCurrency = (str) => {
+            return Number(str.replace(/[^0-9]/g, ''));
+        };
+
+        function App() {
+            // --- STATES ---
+            const [isLoading, setIsLoading] = useState(true);
+            const [isDarkMode, setIsDarkMode] = useState(true);
+            const [activeTab, setActiveTab] = useState('Dashboard');
+            const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+            const [toasts, setToasts] = useState([]);
             
-            <!-- 2. ROBOT INTERACTIVE 3D CANVAS WEBGL -->
-            <div class="w-full max-w-xs h-64 sm:h-72 relative flex items-center justify-center mb-4">
-                <div id="robot-container-3d" class="w-full h-full absolute inset-0"></div>
-                <!-- HUD Ring Radar Overlay Decorator -->
-                <div class="absolute w-44 h-44 border border-dashed border-neoncyan/20 rounded-full animate-spin" style="animation-duration: 25s"></div>
-                <div class="absolute w-52 h-52 border border-neonglow/10 rounded-full animate-spin" style="animation-direction: reverse; animation-duration: 15s"></div>
-            </div>
+            // Core Data States
+            const [transactions, setTransactions] = useState(() => JSON.parse(localStorage.getItem('tb_txs')) || initialTransactions);
+            const [targets, setTargets] = useState(() => JSON.parse(localStorage.getItem('tb_targets')) || initialTargets);
+            const [wishlist, setWishlist] = useState(() => JSON.parse(localStorage.getItem('tb_wishlist')) || initialWishlist);
 
-            <!-- 3. ANIMATED TEXT TYPING CONTAINER -->
-            <div class="mb-6">
-                <h1 class="font-orbitron font-black text-4xl sm:text-6xl tracking-wider text-white mb-4">
-                    CODING <span class="text-transparent bg-clip-text bg-gradient-to-r from-neoncyan to-neonglow text-neon">NUSANTARA</span>
-                </h1>
-                <div class="min-h-[48px] max-w-xl mx-auto">
-                    <p id="typing-paragraph" class="text-xs sm:text-sm text-gray-400 font-sans leading-relaxed tracking-wide"></p>
-                </div>
-            </div>
+            // Transaction Form State
+            const [txType, setTxType] = useState('pemasukan');
+            const [txAmount, setTxAmount] = useState('');
+            const [txCategory, setTxCategory] = useState('Gaji');
+            const [txNote, setTxNote] = useState('');
+            const [txDate, setTxDate] = useState(new Date().toISOString().split('T')[0]);
+            const [editingTxId, setEditingTxId] = useState(null);
 
-            <!-- 4. CONNECT CARD / LINK & JOIN SECTION -->
-            <div class="w-full max-w-md glass-card p-6 sm:p-8 rounded-2xl glow-neon border border-neoncyan/20 transform hover:scale-[1.01] transition-transform duration-300" data-aos="fade-up" data-aos-delay="200">
-                <div class="flex items-center justify-center gap-3 mb-3 text-emerald-400 text-sm font-semibold tracking-wider font-orbitron">
-                    <i class="fa-brands fa-whatsapp text-lg animate-bounce"></i> WHATSAPP GROUP HUB
-                </div>
-                <h3 class="text-white font-bold text-base sm:text-lg mb-2">Gabung komunitas kami sekarang</h3>
-                <p class="text-xs text-gray-500 font-sans mb-6 leading-relaxed">Dapatkan akses diskusi langsung bersama ribuan developer tanah air, sharing script project, update teknologi, dan kolaborasi sistem bersama.</p>
-                
-                <a href="https://chat.whatsapp.com/EEYOHJVrsCBIUws8hcG6Pm" target="_blank" id="btn-join-wa" class="w-full py-4 rounded-xl font-orbitron font-black text-xs tracking-[0.2em] text-black bg-neoncyan shadow-[0_0_20px_rgba(0,240,255,0.4)] block hover:bg-white hover:shadow-[0_0_30px_rgba(255,255,255,0.8)] transition-all duration-300 transform active:scale-95">
-                    JOIN SEKARANG
-                </a>
-            </div>
+            // Filter & Search States
+            const [searchQuery, setSearchQuery] = useState('');
+            const [filterTime, setFilterTime] = useState('Semua');
+            const [filterType, setFilterType] = useState('Semua');
 
-        </main>
+            // Target & Wishlist Form States
+            const [newTargetName, setNewTargetName] = useState('');
+            const [newTargetAmount, setNewTargetAmount] = useState('');
+            const [newTargetDeadline, setNewTargetDeadline] = useState('');
+            const [newWishName, setNewWishName] = useState('');
+            const [newWishPrice, setNewWishPrice] = useState('');
+            const [newWishImage, setNewWishImage] = useState('');
 
-        <!-- SYSTEM FOOTER -->
-        <footer class="w-full max-w-7xl mx-auto px-6 py-6 text-center font-mono text-[10px] text-gray-600 relative z-20">
-            <div>© 2026 Coding Nusantara. Developed with High Interaction Architecture.</div>
-        </footer>
-    </div>
+            // --- LOCAL STORAGE SYNC ---
+            useEffect(() => { localStorage.setItem('tb_txs', JSON.stringify(transactions)); }, [transactions]);
+            useEffect(() => { localStorage.setItem('tb_targets', JSON.stringify(targets)); }, [targets]);
+            useEffect(() => { localStorage.setItem('tb_wishlist', JSON.stringify(wishlist)); }, [wishlist]);
 
-    <!-- JavaScript Framework Bundlers via CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+            // --- SIMULATE INITIAL LOADING ---
+            useEffect(() => {
+                setTimeout(() => {
+                    setIsLoading(false);
+                    showToast('Selamat Datang di Tabunganku v2026', 'info');
+                }, 1800);
+            }, []);
 
-    <script>
-        // --- 1. AUDIO SYNTHESIZER AND VOICE MATRIX SYSTEM ---
-        let audioContextEngine = null;
+            // Lucide Icons Render Trigger
+            useEffect(() => { if (!isLoading) lucide.createIcons(); }, [isLoading, activeTab, isSidebarOpen, transactions, targets, wishlist]);
 
-        function runStartupAudioBeep() {
-            if (!audioContextEngine) {
-                audioContextEngine = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            // Generate Synthesized Modern Welcome Tone
-            let now = audioContextEngine.currentTime;
-            let osc1 = audioContextEngine.createOscillator();
-            let osc2 = audioContextEngine.createOscillator();
-            let gain = audioContextEngine.createGain();
+            // --- TOAST SYSTEM ---
+            const showToast = (msg, type = 'success') => {
+                const id = Date.now();
+                setToasts(prev => [...prev, { id, msg, type }]);
+                setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 4000);
+            };
 
-            osc1.type = 'sine'; osc1.frequency.setValueAtTime(523.25, now); // C5 Tone
-            osc2.type = 'sine'; osc2.frequency.setValueAtTime(659.25, now + 0.1); // E5 Tone
+            // --- FINANCIAL CALCULATION ---
+            const totalPemasukan = transactions.filter(t => t.type === 'pemasukan').reduce((acc, curr) => acc + curr.amount, 0);
+            const totalPengeluaran = transactions.filter(t => t.type === 'pengeluaran').reduce((acc, curr) => acc + curr.amount, 0);
+            const totalSaldo = totalPemasukan - totalPengeluaran;
 
-            gain.gain.setValueAtTime(0.04, now);
-            gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.5);
+            // --- HANDLERS ---
+            const handleAddTransaction = (e) => {
+                e.preventDefault();
+                if (!txAmount || parseCurrency(txAmount) <= 0) return showToast('Nominal harus diisi dengan benar!', 'error');
 
-            osc1.connect(gain); osc2.connect(gain);
-            gain.connect(audioContextEngine.destination);
+                if (editingTxId) {
+                    setTransactions(prev => prev.map(t => t.id === editingTxId ? {
+                        ...t, type: txType, amount: parseCurrency(txAmount), category: txCategory, note: txNote, date: txDate
+                    } : t));
+                    setEditingTxId(null);
+                    showToast('Transaksi berhasil diperbarui!');
+                } else {
+                    const newTx = {
+                        id: Date.now(),
+                        type: txType,
+                        amount: parseCurrency(txAmount),
+                        category: txCategory,
+                        note: txNote,
+                        date: txDate
+                    };
+                    setTransactions(prev => [newTx, ...prev]);
+                    showToast('Transaksi berhasil ditambahkan!');
+                }
+                // Reset form
+                setTxAmount('');
+                setTxNote('');
+            };
 
-            osc1.start(now); osc2.start(now + 0.1);
-            osc1.stop(now + 0.5); osc2.stop(now + 0.5);
-        }
+            const handleEditTx = (tx) => {
+                setEditingTxId(tx.id);
+                setTxType(tx.type);
+                setTxAmount(tx.amount.toString());
+                setTxCategory(tx.category);
+                setTxNote(tx.note);
+                setTxDate(tx.date);
+                if(activeTab !== 'Dashboard' && activeTab !== 'Pemasukan' && activeTab !== 'Pengeluaran') {
+                    setActiveTab('Dashboard');
+                }
+            };
 
-        function triggerSpeechAI() {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Clears any ongoing cues
-                let robotVoice = new SpeechSynthesisUtterance();
-                robotVoice.text = "Selamat datang di Group Coding Nusantara.";
-                robotVoice.lang = 'id-ID';
-                robotVoice.rate = 0.9;  // Slightly robotic pace
-                robotVoice.pitch = 1.1; // Friendly synthetic pitch
-                window.speechSynthesis.speak(robotVoice);
-            }
-        }
+            const handleDeleteTx = (id) => {
+                setTransactions(prev => prev.filter(t => t.id !== id));
+                showToast('Transaksi berhasil dihapus', 'error');
+            };
 
-        // --- 2. BOOT LOADING PIPELINE MANAGER ---
-        window.addEventListener('load', () => {
-            const labelText = document.getElementById('loader-hud-text');
-            const initBtn = document.getElementById('btn-initialize-boot');
+            const handleAddTarget = (e) => {
+                e.preventDefault();
+                if(!newTargetName || !newTargetAmount || !newTargetDeadline) return showToast('Harap isi semua field target!', 'error');
+                const nt = {
+                    id: Date.now(),
+                    name: newTargetName,
+                    target: parseCurrency(newTargetAmount),
+                    current: 0,
+                    deadline: newTargetDeadline
+                };
+                setTargets(prev => [...prev, nt]);
+                setNewTargetName('');
+                setNewTargetAmount('');
+                setNewTargetDeadline('');
+                showToast('Target Impian berhasil dibuat!');
+            };
 
-            // Autoplay policies require user interaction for audio context initialization in some browsers
-            labelText.innerText = "AWAITING CORE INITIALIZATION...";
-            initBtn.classList.remove('hidden');
+            const handleAddWishlist = (e) => {
+                e.preventDefault();
+                if(!newWishName || !newWishPrice) return showToast('Nama dan harga barang wajib diisi!', 'error');
+                const nw = {
+                    id: Date.now(),
+                    name: newWishName,
+                    price: parseCurrency(newWishPrice),
+                    saved: 0,
+                    image: newWishImage || 'https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=400&auto=format&fit=crop&q=60'
+                };
+                setWishlist(prev => [...prev, nw]);
+                setNewWishName('');
+                setNewWishPrice('');
+                setNewWishImage('');
+                showToast('Barang impian berhasil masuk wishlist!');
+            };
 
-            initBtn.addEventListener('click', () => {
-                runStartupAudioBeep();
-                triggerSpeechAI();
+            const simulateExport = (type) => {
+                showToast(`Sedang memproses export ke ${type}...`, 'info');
+                setTimeout(() => {
+                    showToast(`File Tabunganku_${type.toUpperCase()}_Berhasil_Diunduh!`);
+                }, 1500);
+            };
 
-                gsap.to("#loader-screen", {
-                    y: '-100%',
-                    duration: 1,
-                    ease: 'power4.inOut',
-                    onComplete: () => {
-                        document.getElementById('loader-screen').style.display = 'none';
-                        const mainDashboard = document.getElementById('dashboard-space');
-                        mainDashboard.classList.remove('hidden');
+            // --- RENDER COMPONENT WIDGETS ---
+            return (
+                <div className={`min-h-screen ${isDarkMode ? 'dark bg-darkBg text-slate-100' : 'bg-slate-50 text-slate-900 transition-colors duration-300'}`}>
+                    
+                    {/* Background Animation Layers */}
+                    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+                        <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-glow-1 rounded-full blur-[120px] animate-pulse"></div>
+                        <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-glow-2 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '6s' }}></div>
+                        {/* Futuristic Grid Line */}
+                        <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.03] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:30px_30px]"></div>
+                    </div>
+
+                    {/* SKELETON / LOADING SCREEN */}
+                    <AnimatePresence>
+                        {isLoading && (
+                            <motion.div 
+                                className="fixed inset-0 bg-[#090a0f] z-50 flex flex-col justify-center items-center"
+                                exit={{ opacity: 0, transition: { duration: 0.6, ease: 'easeInOut' } }}
+                            >
+                                <motion.div 
+                                    className="relative w-24 h-24 flex items-center justify-center mb-4"
+                                    initial={{ scale: 0.8, opacity: 0 }}
+                                    animate={{ scale: [1, 1.1, 1], opacity: 1 }}
+                                    transition={{ repeat: Infinity, duration: 1.5 }}
+                                >
+                                    <div className="absolute inset-0 rounded-full border-4 border-t-neonCyan border-r-neonPurple border-b-transparent border-l-transparent animate-spin"></div>
+                                    <i data-lucide="wallet" className="w-10 h-10 text-neonCyan animate-pulse"></i>
+                                </motion.div>
+                                <motion.h1 
+                                    className="text-2xl font-extrabold tracking-wider bg-gradient-to-r from-neonCyan via-neonBlue to-neonPurple bg-clip-text text-transparent"
+                                    initial={{ letterSpacing: '0.1em', opacity: 0 }}
+                                    animate={{ letterSpacing: '0.2em', opacity: 1 }}
+                                    transition={{ duration: 1 }}
+                                >
+                                    TABUNGANKU OS
+                                </motion.h1>
+                                <p className="text-xs text-slate-500 mt-2 tracking-widest uppercase">Fintech Ecosystem v2.26</p>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* TOAST NOTIFICATION CONTAINER */}
+                    <div className="fixed top-5 right-5 z-50 flex flex-col gap-3 pointer-events-none">
+                        <AnimatePresence>
+                            {toasts.map(t => (
+                                <motion.div
+                                    key={t.id}
+                                    layout
+                                    initial={{ opacity: 0, y: -20, scale: 0.9 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
+                                    className={`glass-panel pointer-events-auto flex items-center p-4 rounded-xl shadow-lg border-l-4 min-w-[280px] ${
+                                        t.type === 'error' ? 'border-red-500 bg-red-950/40 text-red-200' : 
+                                        t.type === 'info' ? 'border-neonBlue bg-blue-950/40 text-blue-200' : 'border-neonCyan bg-slate-900/80 text-neonCyan'
+                                    }`}
+                                >
+                                    <i data-lucide={t.type === 'error' ? 'alert-triangle' : t.type === 'info' ? 'info' : 'check-circle'} className="w-5 h-5 mr-3 flex-shrink-0"></i>
+                                    <span className="text-sm font-medium">{t.msg}</span>
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </div>
+
+                    {/* TOP NAVBAR */}
+                    <nav className="sticky top-0 z-40 glass-panel border-b border-white/5 backdrop-blur-md px-4 py-3 lg:px-8 flex justify-between items-center transition-all duration-300">
+                        <div className="flex items-center gap-4">
+                            <motion.button 
+                                whileTap={{ scale: 0.9 }}
+                                onClick={() => setIsSidebarOpen(true)}
+                                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-200 transition-all border border-white/5 shadow-inner"
+                            >
+                                <i data-lucide="menu" className="w-6 h-6"></i>
+                            </motion.button>
+                            <div className="flex items-center gap-2">
+                                <div className="p-2 rounded-xl bg-gradient-to-br from-neonCyan to-neonPurple shadow-neonCyan/20 shadow-lg">
+                                    <i data-lucide="trending-up" className="w-5 h-5 text-darkBg"></i>
+                                </div>
+                                <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+                                    Tabunganku<span className="text-neonCyan font-black text-xs ml-1 bg-neonCyan/10 px-1.5 py-0.5 rounded border border-neonCyan/20">2026</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Right Elements */}
+                        <div className="flex items-center gap-3">
+                            <motion.button 
+                                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                                onClick={() => {
+                                    setIsDarkMode(!isDarkMode);
+                                    document.documentElement.classList.toggle('dark');
+                                    showToast(`Mode ${!isDarkMode ? 'Dark' : 'Light'} Diaktifkan`, 'info');
+                                }}
+                                className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 text-amber-400 dark:text-indigo-400"
+                            >
+                                <i data-lucide={isDarkMode ? "sun" : "moon"} className="w-5 h-5"></i>
+                            </motion.button>
+                            <div className="hidden sm:flex items-center gap-3 border-l border-white/10 pl-3">
+                                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-neonPurple to-neonPink p-[1px]">
+                                    <div className="w-full h-full rounded-xl bg-darkBg flex items-center justify-center font-bold text-xs text-neonCyan">RA</div>
+                                </div>
+                                <span className="text-xs font-semibold tracking-wide text-slate-400">Reza Aditya</span>
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* SIDEBAR COMPONENT */}
+                    <AnimatePresence>
+                        {isSidebarOpen && (
+                            <>
+                                {/* Overlay */}
+                                <motion.div 
+                                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                                    onClick={() => setIsSidebarOpen(false)}
+                                    className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+                                />
+                                {/* Content */}
+                                <motion.div 
+                                    initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
+                                    transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                                    className="fixed top-0 left-0 bottom-0 z-50 w-72 glass-panel bg-darkBg/80 backdrop-blur-xl border-r border-white/10 p-6 flex flex-col shadow-2xl"
+                                >
+                                    <div className="flex justify-between items-center mb-8">
+                                        <div className="flex items-center gap-2">
+                                            <i data-lucide="activity" className="w-5 h-5 text-neonPurple animate-pulse"></i>
+                                            <span className="font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-neonCyan to-neonPurple">MENU UTAMA</span>
+                                        </div>
+                                        <button onClick={() => setIsSidebarOpen(false)} className="p-1.5 rounded-lg hover:bg-white/10 text-slate-400"><i data-lucide="x" className="w-5 h-5"></i></button>
+                                    </div>
+
+                                    <div className="flex flex-col gap-2 flex-grow">
+                                        {[
+                                            { name: 'Dashboard', icon: 'layout-dashboard' },
+                                            { name: 'Pemasukan', icon: 'arrow-down-left' },
+                                            { name: 'Pengeluaran', icon: 'arrow-up-right' },
+                                            { name: 'Target Tabungan', icon: 'target' },
+                                            { name: 'Wish List', icon: 'heart' },
+                                            { name: 'Riwayat Transaksi', icon: 'history' },
+                                            { name: 'Laporan', icon: 'pie-chart' },
+                                            { name: 'Pengaturan', icon: 'sliders' }
+                                        ].map((item) => {
+                                            const isActive = activeTab === item.name;
+                                            return (
+                                                <motion.button
+                                                    key={item.name}
+                                                    whileHover={{ x: 4, backgroundColor: 'rgba(255,255,255,0.05)' }}
+                                                    onClick={() => {
+                                                        setActiveTab(item.name);
+                                                        setIsSidebarOpen(false);
+                                                        if(item.name === 'Pemasukan') { setTxType('pemasukan'); setActiveTab('Dashboard'); }
+                                                        if(item.name === 'Pengeluaran') { setTxType('pengeluaran'); setActiveTab('Dashboard'); }
+                                                    }}
+                                                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-medium ${
+                                                        isActive 
+                                                        ? 'bg-gradient-to-r from-neonBlue/20 to-neonPurple/20 text-neonCyan border-l-4 border-neonCyan shadow-neonCyan/10 shadow-md' 
+                                                        : 'text-slate-400 hover:text-slate-100'
+                                                    }`}
+                                                >
+                                                    <i data-lucide={item.icon} className={`w-5 h-5 ${isActive ? 'text-neonCyan' : ''}`}></i>
+                                                    {item.name}
+                                                </motion.button>
+                                            );
+                                        })}
+                                    </div>
+                                    
+                                    <div className="pt-4 border-t border-white/5 text-center text-[10px] text-slate-500 tracking-widest font-mono">
+                                        TABUNGANKU CORE v2.26
+                                    </div>
+                                </motion.div>
+                            </>
+                        )}
+                    </AnimatePresence>
+
+                    {/* MAIN CONTENT SPACE CONTAINER */}
+                    <main className="relative z-10 max-w-7xl mx-auto px-4 py-6 lg:px-8 space-y-8 pb-20">
                         
-                        gsap.to(mainDashboard, {
-                            opacity: 1,
-                            duration: 0.8,
-                            onComplete: () => {
-                                AOS.init({ duration: 800, once: true });
-                                executeParagraphTyping();
+                        {/* VIEW METADATA BANNER */}
+                        <motion.div 
+                            initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
+                            className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-4"
+                        >
+                            <div>
+                                <h2 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
+                                    {activeTab === 'Dashboard' ? 'Sistem Finansial' : activeTab}
+                                </h2>
+                                <p className="text-xs text-slate-400 mt-1">Sistem manajemen dan pelacakan tabungan personal otomatis modern.</p>
+                            </div>
+                            <div className="px-4 py-2 rounded-xl glass-panel text-xs font-mono font-bold text-neonCyan flex items-center gap-2 shadow-inner">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                                LIVE STORAGE SYNC ACTIVE
+                            </div>
+                        </motion.div>
+
+                        {/* --- PAGE: DASHBOARD --- */}
+                        {activeTab === 'Dashboard' && (
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                                
+                                {/* Left/Center Column (Cards, Quick Actions, Charts) */}
+                                <div className="lg:col-span-2 space-y-8">
+                                    
+                                    {/* 3 Utama Metrics Cards */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                        {/* Card Saldo */}
+                                        <motion.div 
+                                            whileHover={{ y: -5 }}
+                                            className="glass-panel p-5 rounded-2xl relative overflow-hidden bg-gradient-to-br from-darkCard to-indigo-950/20 shadow-neonCyan/5 shadow-2xl group animate-float"
+                                        >
+                                            <div className="absolute -top-10 -right-10 w-24 h-24 bg-neonCyan/10 rounded-full blur-xl group-hover:bg-neonCyan/20 transition-all duration-500"></div>
+                                            <div className="flex justify-between items-start mb-4">
+                                                <span className="text-xs font-bold text-neonCyan uppercase tracking-widest">Total Saldo</span>
+                                                <div className="p-2 rounded-xl bg-neonCyan/10 text-neonCyan"><i data-lucide="wallet" className="w-4 h-4"></i></div>
+                                            </div>
+                                            <h3 className="text-2xl font-black tracking-tight text-white mb-1 shadow-neonCyan">{formatRupiah(totalSaldo)}</h3>
+                                            <span className="text-[10px] text-slate-400 flex items-center gap-1"><i data-lucide="sparkles" className="w-3 h-3 text-neonCyan"></i> Likuiditas Tersedia</span>
+                                        </motion.div>
+
+                                        {/* Card Pemasukan */}
+                                        <motion.div 
+                                            whileHover={{ y: -5 }}
+                                            className="glass-panel p-5 rounded-2xl relative overflow-hidden bg-gradient-to-br from-darkCard to-emerald-950/10 shadow-xl group"
+                                        >
+                                            <div className="absolute -top-10 -right-10 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl group-hover:bg-emerald-500/20 transition-all duration-500"></div>
+                                            <div className="flex justify-between items-start mb-4">
+                                                <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest">Total Pemasukan</span>
+                                                <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400"><i data-lucide="arrow-down-left" className="w-4 h-4"></i></div>
+                                            </div>
+                                            <h3 className="text-2xl font-black tracking-tight text-emerald-400 mb-1">{formatRupiah(totalPemasukan)}</h3>
+                                            <span className="text-[10px] text-slate-400">Akumulasi Transaksi Masuk</span>
+                                        </motion.div>
+
+                                        {/* Card Pengeluaran */}
+                                        <motion.div 
+                                            whileHover={{ y: -5 }}
+                                            className="glass-panel p-5 rounded-2xl relative overflow-hidden bg-gradient-to-br from-darkCard to-rose-950/10 shadow-xl group"
+                                        >
+                                            <div className="absolute -top-10 -right-10 w-24 h-24 bg-rose-500/10 rounded-full blur-xl group-hover:bg-rose-500/20 transition-all duration-500"></div>
+                                            <div className="flex justify-between items-start mb-4">
+                                                <span className="text-xs font-bold text-rose-400 uppercase tracking-widest">Total Pengeluaran</span>
+                                                <div className="p-2 rounded-xl bg-rose-500/10 text-rose-400"><i data-lucide="arrow-up-right" className="w-4 h-4"></i></div>
+                                            </div>
+                                            <h3 className="text-2xl font-black tracking-tight text-rose-400 mb-1">{formatRupiah(totalPengeluaran)}</h3>
+                                            <span className="text-[10px] text-slate-400">Dana Terkonsumsi</span>
+                                        </motion.div>
+                                    </div>
+
+                                    {/* INTERACTIVE CHART CONTAINER */}
+                                    <div className="glass-panel p-6 rounded-2xl bg-darkCard/50">
+                                        <div className="flex justify-between items-center mb-6">
+                                            <div>
+                                                <h4 className="text-base font-bold text-white">Alur Arus Kas</h4>
+                                                <p className="text-xs text-slate-400">Analisis visual komparasi riwayat keuangan.</p>
+                                            </div>
+                                            <div className="flex gap-2 text-xs font-semibold">
+                                                <span className="flex items-center gap-1.5 text-neonCyan bg-neonCyan/10 px-2.5 py-1 rounded-lg border border-neonCyan/10"><span className="w-1.5 h-1.5 rounded-full bg-neonCyan"></span> Masuk</span>
+                                                <span className="flex items-center gap-1.5 text-neonPurple bg-neonPurple/10 px-2.5 py-1 rounded-lg border border-neonPurple/10"><span className="w-1.5 h-1.5 rounded-full bg-neonPurple"></span> Keluar</span>
+                                            </div>
+                                        </div>
+                                        <div className="h-[280px] w-full relative">
+                                            <ChartContainer transactions={transactions} />
+                                        </div>
+                                    </div>
+
+                                    {/* TERBARU TRANSAKSI MINI TABLE */}
+                                    <div className="glass-panel p-6 rounded-2xl">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <h4 className="text-base font-bold text-white">Aktivitas Transaksi Terakhir</h4>
+                                            <button onClick={() => setActiveTab('Riwayat Transaksi')} className="text-xs font-bold text-neonCyan hover:underline flex items-center gap-1">Lihat Semua <i data-lucide="chevron-right" className="w-3 h-3"></i></button>
+                                        </div>
+                                        <div className="space-y-3">
+                                            {transactions.slice(0, 3).map(t => (
+                                                <div key={t.id} className="flex justify-between items-center p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-white/5 group">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={`p-2 rounded-xl ${t.type === 'pemasukan' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
+                                                            <i data-lucide={t.type === 'pemasukan' ? 'plus-circle' : 'minus-circle'} className="w-4 h-4"></i>
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-sm font-semibold text-slate-200">{t.note || t.category}</p>
+                                                            <p className="text-[10px] text-slate-400 font-mono">{t.date} • {t.category}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-4">
+                                                        <span className={`text-sm font-bold font-mono ${t.type === 'pemasukan' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                                                            {t.type === 'pemasukan' ? '+' : '-'}{formatRupiah(t.amount)}
+                                                        </span>
+                                                        <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-all">
+                                                            <button onClick={() => handleEditTx(t)} className="p-1 hover:bg-white/10 rounded text-slate-400 hover:text-neonCyan"><i data-lucide="edit-3" className="w-3.5 h-3.5"></i></button>
+                                                            <button onClick={() => handleDeleteTx(t.id)} className="p-1 hover:bg-white/10 rounded text-slate-400 hover:text-red-400"><i data-lucide="trash-2" className="w-3.5 h-3.5"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            {transactions.length === 0 && <p className="text-sm text-center text-slate-500 py-4">Belum ada transaksi terekam.</p>}
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                {/* Right Column (Form Input & Target Progress) */}
+                                <div className="space-y-8">
+                                    
+                                    {/* QUICK ACTION FORM */}
+                                    <div className="glass-panel p-6 rounded-2xl bg-gradient-to-b from-darkCard to-darkBg relative border border-white/10">
+                                        <div className="absolute top-0 right-10 w-20 h-[1px] bg-gradient-to-r from-transparent via-neonCyan to-transparent"></div>
+                                        <h4 className="text-base font-bold text-white mb-4 flex items-center gap-2">
+                                            <i data-lucide="zap" className="w-4 h-4 text-neonCyan animate-bounce"></i> 
+                                            {editingTxId ? 'Edit Transaksi' : 'Quick Record'}
+                                        </h4>
+                                        <form onSubmit={handleAddTransaction} className="space-y-4">
+                                            <div className="grid grid-cols-2 gap-2 p-1 rounded-xl bg-white/5 border border-white/5">
+                                                <button 
+                                                    type="button" onClick={() => setTxType('pemasukan')}
+                                                    className={`py-2 text-xs font-bold rounded-lg transition-all ${txType === 'pemasukan' ? 'bg-gradient-to-r from-emerald-500/20 to-teal-500/20 text-emerald-400 border border-emerald-500/30' : 'text-slate-400 hover:text-slate-200'}`}
+                                                >
+                                                    Pemasukan
+                                                </button>
+                                                <button 
+                                                    type="button" onClick={() => setTxType('pengeluaran')}
+                                                    className={`py-2 text-xs font-bold rounded-lg transition-all ${txType === 'pengeluaran' ? 'bg-gradient-to-r from-rose-500/20 to-pink-500/20 text-rose-400 border border-rose-500/30' : 'text-slate-400 hover:text-slate-200'}`}
+                                                >
+                                                    Pengeluaran
+                                                </button>
+                                            </div>
+
+                                            <div>
+                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Nominal Rupiah</label>
+                                                <div className="relative">
+                                                    <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-xs text-slate-500">Rp</span>
+                                                    <input 
+                                                        type="text" required placeholder="0" 
+                                                        value={txAmount ? txAmount.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : ""}
+                                                        onChange={(e) => setTxAmount(e.target.value.replace(/\./g, ''))}
+                                                        className="w-full bg-white/5 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-sm font-bold text-white focus:outline-none focus:border-neonCyan focus:shadow-neonCyan/10 transition-all font-mono"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-3">
+                                                <div>
+                                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Kategori</label>
+                                                    <select 
+                                                        value={txCategory} onChange={(e) => setTxCategory(e.target.value)}
+                                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-xs font-medium text-slate-200 focus:outline-none focus:border-neonCyan transition-all"
+                                                    >
+                                                        {txType === 'pemasukan' ? (
+                                                            <>
+                                                                <option value="Gaji" className="bg-darkBg">Gaji</option>
+                                                                <option value="Investasi" className="bg-darkBg">Investasi</option>
+                                                                <option value="Freelance" className="bg-darkBg">Freelance</option>
+                                                                <option value="Lainnya" className="bg-darkBg">Lainnya</option>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <option value="Makanan" className="bg-darkBg">Makanan</option>
+                                                                <option value="Hiburan" className="bg-darkBg">Hiburan</option>
+                                                                <option value="Edukasi" className="bg-darkBg">Edukasi</option>
+                                                                <option value="Tagihan" className="bg-darkBg">Tagihan</option>
+                                                                <option value="Transport" className="bg-darkBg">Transport</option>
+                                                                <option value="Lainnya" className="bg-darkBg">Lainnya</option>
+                                                            </>
+                                                        )}
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Tanggal</label>
+                                                    <input 
+                                                        type="date" required value={txDate} onChange={(e) => setTxDate(e.target.value)}
+                                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-xs font-semibold text-slate-200 focus:outline-none focus:border-neonCyan transition-all font-mono"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Catatan Tambahan</label>
+                                                <input 
+                                                    type="text" placeholder="Keterangan singkat..." value={txNote} onChange={(e) => setTxNote(e.target.value)}
+                                                    className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-neonCyan transition-all"
+                                                />
+                                            </div>
+
+                                            <motion.button
+                                                whileHover={{ scale: 1.02, boxShadow: '0 0 15px rgba(0, 242, 254, 0.3)' }} whileTap={{ scale: 0.98 }}
+                                                type="submit"
+                                                className="w-full py-3 rounded-xl bg-gradient-to-r from-neonBlue to-neonCyan text-darkBg font-black text-xs uppercase tracking-widest transition-all mt-2"
+                                            >
+                                                {editingTxId ? 'Update Transaksi' : 'Simpan Transaksi'}
+                                            </motion.button>
+                                            {editingTxId && (
+                                                <button type="button" onClick={() => { setEditingTxId(null); setTxAmount(''); setTxNote(''); }} className="w-full text-center text-xs text-slate-400 hover:underline pt-1">Batal Edit</button>
+                                            )}
+                                        </form>
+                                    </div>
+
+                                    {/* TARGET PROGRESS OVERVIEW MINI CARD */}
+                                    <div className="glass-panel p-6 rounded-2xl bg-gradient-to-br from-darkCard to-purple-950/10">
+                                        <div className="flex justify-between items-center mb-4">
+                                            <h4 className="text-base font-bold text-white flex items-center gap-2"><i data-lucide="target" className="w-4 h-4 text-neonPurple"></i> Target Monitor</h4>
+                                            <button onClick={() => setActiveTab('Target Tabungan')} className="text-xs text-neonPurple font-bold hover:underline">Kelola</button>
+                                        </div>
+                                        <div className="space-y-4">
+                                            {targets.slice(0, 2).map(target => {
+                                                const pct = Math.min(Math.round((target.current / target.target) * 100), 100);
+                                                return (
+                                                    <div key={target.id} className="space-y-1.5">
+                                                        <div className="flex justify-between text-xs">
+                                                            <span className="font-semibold text-slate-300">{target.name}</span>
+                                                            <span className="font-bold font-mono text-neonCyan">{pct}%</span>
+                                                        </div>
+                                                        <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden p-[1px] border border-white/5">
+                                                            <div className="h-full bg-gradient-to-r from-neonBlue to-neonPurple rounded-full shadow-neonPurple/50 shadow-sm" style={{ width: `${pct}%` }}></div>
+                                                        </div>
+                                                        <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                                                            <span>{formatRupiah(target.current)}</span>
+                                                            <span>{formatRupiah(target.target)}</span>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        )}
+
+                        {/* --- PAGE: TARGET TABUNGAN --- */}
+                        {activeTab === 'Target Tabungan' && (
+                            <div className="space-y-8">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <div className="md:col-span-1 glass-panel p-6 rounded-2xl h-fit">
+                                        <h4 className="text-base font-bold text-white mb-4">Buat Target Baru</h4>
+                                        <form onSubmit={handleAddTarget} className="space-y-4">
+                                            <div>
+                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Nama Target Impian</label>
+                                                <input type="text" required placeholder="Contoh: Beli Laptop Baru" value={newTargetName} onChange={(e)=>setNewTargetName(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-sm text-white focus:outline-none focus:border-neonPurple transition-all" />
+                                            </div>
+                                            <div>
+                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Nominal Target Dana</label>
+                                                <input type="text" required placeholder="Rp 0" value={newTargetAmount ? newTargetAmount.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : ""} onChange={(e)=>setNewTargetAmount(e.target.value.replace(/\./g, ''))} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-sm font-bold font-mono text-white focus:outline-none focus:border-neonPurple transition-all" />
+                                            </div>
+                                            <div>
+                                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Tenggat Waktu (Deadline)</label>
+                                                <input type="date" required value={newTargetDeadline} onChange={(e)=>setNewTargetDeadline(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-neonPurple transition-all font-mono" />
+                                            </div>
+                                            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" className="w-full py-3 rounded-xl bg-gradient-to-r from-neonPurple to-neonPink text-white font-bold text-xs uppercase tracking-widest shadow-neonPurple/20 shadow-md">
+                                                Inisialisasi Target
+                                            </motion.button>
+                                        </form>
+                                    </div>
+                                    <div className="md:col-span-2 space-y-4">
+                                        <h4 className="text-base font-bold text-white">Daftar Resolusi Target & Goal</h4>
+                                        {targets.map(t => {
+                                            const pct = Math.min(Math.round((t.current / t.target) * 100), 100);
+                                            const remaining = Math.max(t.target - t.current, 0);
+                                            return (
+                                                <motion.div key={t.id} layout className="glass-panel p-6 rounded-2xl bg-gradient-to-r from-darkCard to-transparent relative group overflow-hidden">
+                                                    <div className="absolute top-0 right-0 p-4 font-mono text-[10px] text-slate-500">Target: {t.deadline}</div>
+                                                    <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
+                                                        <div>
+                                                            <h5 className="text-lg font-bold text-white mb-1 flex items-center gap-2">
+                                                                <span className="w-2 h-2 rounded-full bg-neonPurple shadow-neonPurple shadow-sm"></span> {t.name}
+                                                            </h5>
+                                                            <p className="text-xs text-slate-400 font-medium">Sisa dana yang dibutuhkan: <span className="text-neonCyan font-mono font-bold">{formatRupiah(remaining)}</span></p>
+                                                        </div>
+                                                        <div className="text-left sm:text-right">
+                                                            <span className="text-2xl font-black font-mono text-transparent bg-clip-text bg-gradient-to-r from-neonCyan to-neonPurple">{pct}%</span>
+                                                            <p className="text-[9px] text-slate-500 font-mono uppercase tracking-widest">Tingkat Capaian</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="w-full h-3 bg-white/5 rounded-full overflow-hidden p-[1px] border border-white/5 mb-3">
+                                                        <div className="h-full bg-gradient-to-r from-neonCyan via-neonBlue to-neonPurple rounded-full shadow-neonCyan/30 shadow-md animate-pulse" style={{ width: `${pct}%` }}></div>
+                                                    </div>
+                                                    <div className="flex justify-between items-center text-xs">
+                                                        <span className="text-slate-400 italic text-[11px]">
+                                                            {pct >= 100 ? '🎉 Selamat! Target dana impianmu sudah terpenuhi penuh!' : pct > 50 ? '🔥 Sudah lebih dari setengah jalan! Gass terus tabungannya!' : '🚀 Langkah awal yang hebat, mari konsisten menabung!'}
+                                                        </span>
+                                                        <div className="flex gap-2">
+                                                            <button 
+                                                                onClick={() => {
+                                                                    setTargets(prev => prev.map(item => item.id === t.id ? {...item, current: item.current + 500000} : item));
+                                                                    showToast('+Rp500.000 dimasukkan ke target');
+                                                                }}
+                                                                className="px-2.5 py-1.5 rounded-lg bg-neonCyan/10 border border-neonCyan/20 text-neonCyan font-bold text-[10px] uppercase hover:bg-neonCyan/20 transition-all"
+                                                            >
+                                                                +500k Isi
+                                                            </button>
+                                                            <button onClick={() => { setTargets(prev => prev.filter(item => item.id !== t.id)); showToast('Target dihapus', 'error'); }} className="p-1.5 hover:bg-red-500/10 rounded-lg text-slate-500 hover:text-red-400 transition-all"><i data-lucide="trash-2" className="w-4 h-4"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </motion.div>
+                                            );
+                                        })}
+                                        {targets.length === 0 && <p className="text-sm text-slate-500 py-6 text-center">Belum ada target keuangan aktif.</p>}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* --- PAGE: WISH LIST --- */}
+                        {activeTab === 'Wish List' && (
+                            <div className="space-y-8">
+                                <div className="glass-panel p-6 rounded-2xl">
+                                    <h4 className="text-base font-bold text-white mb-4">Tambah Barang Impian Baru (Wishlist)</h4>
+                                    <form onSubmit={handleAddWishlist} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                                        <div>
+                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Nama Barang</label>
+                                            <input type="text" required placeholder="Misal: Sepatu Nike Air Max" value={newWishName} onChange={(e)=>setNewWishName(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-neonCyan transition-all" />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Harga Barang Pasar</label>
+                                            <input type="text" required placeholder="Rp 0" value={newWishPrice ? newWishPrice.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : ""} onChange={(e)=>setNewWishPrice(e.target.value.replace(/\./g, ''))} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-xs font-bold font-mono text-white focus:outline-none focus:border-neonCyan transition-all" />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Link Gambar Produk (Opsional)</label>
+                                            <input type="text" placeholder="https://..." value={newWishImage} onChange={(e)=>setNewWishImage(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-neonCyan transition-all" />
+                                        </div>
+                                        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" className="w-full py-2.5 rounded-xl bg-gradient-to-r from-neonCyan to-neonBlue text-darkBg font-black text-xs uppercase tracking-widest shadow-lg">
+                                            Masukkan Wishlist
+                                        </motion.button>
+                                    </form>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                                    {wishlist.map(w => {
+                                        const pct = Math.min(Math.round((w.saved / w.price) * 100), 100);
+                                        return (
+                                            <motion.div key={w.id} whileHover={{ y: -6 }} className="glass-panel rounded-2xl overflow-hidden bg-darkCard border border-white/5 flex flex-col group relative">
+                                                <div className="w-full h-44 relative overflow-hidden bg-slate-900">
+                                                    <img src={w.image} alt={w.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-darkBg via-transparent to-transparent"></div>
+                                                    <button onClick={() => { setWishlist(prev => prev.filter(item => item.id !== w.id)); showToast('Barang wishlist dihapus', 'error'); }} className="absolute top-3 right-3 p-1.5 rounded-xl bg-black/60 backdrop-blur-md text-slate-400 hover:text-rose-400 border border-white/10 transition-all opacity-0 group-hover:opacity-100"><i data-lucide="trash-2" className="w-4 h-4"></i></button>
+                                                </div>
+                                                <div className="p-4 flex-grow flex flex-col justify-between space-y-4">
+                                                    <div>
+                                                        <h5 className="font-bold text-white text-base group-hover:text-neonCyan transition-colors line-clamp-1">{w.name}</h5>
+                                                        <p className="text-xs font-mono font-bold text-slate-400 mt-1">{formatRupiah(w.price)}</p>
+                                                    </div>
+                                                    <div className="space-y-1.5">
+                                                        <div className="flex justify-between text-[10px] font-mono">
+                                                            <span className="text-slate-400">Progression</span>
+                                                            <span className="text-neonCyan font-bold">{pct}%</span>
+                                                        </div>
+                                                        <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                                            <div className="h-full bg-gradient-to-r from-neonCyan to-neonBlue rounded-full" style={{ width: `${pct}%` }}></div>
+                                                        </div>
+                                                        <div className="pt-2 flex gap-1">
+                                                            <button 
+                                                                onClick={() => {
+                                                                    setWishlist(prev => prev.map(item => item.id === w.id ? {...item, saved: Math.min(item.saved + 250000, item.price)} : item));
+                                                                    showToast('Berhasil mengalokasikan tabungan wishlist');
+                                                                }}
+                                                                disabled={w.saved >= w.price}
+                                                                className="w-full py-1.5 rounded-lg bg-white/5 border border-white/10 text-[10px] text-slate-300 font-bold uppercase hover:bg-neonCyan hover:text-darkBg disabled:opacity-30 disabled:hover:bg-white/5 disabled:hover:text-slate-300 transition-all"
+                                                            >
+                                                                {w.saved >= w.price ? 'Terbeli ✓' : '+250k Tabung'}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </motion.div>
+                                        );
+                                    })}
+                                    {wishlist.length === 0 && <p className="text-sm text-slate-500 col-span-full py-8 text-center">Wishlist kamu masih kosong.</p>}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* --- PAGE: RIWAYAT TRANSAKSI --- */}
+                        {activeTab === 'Riwayat Transaksi' && (
+                            <div className="space-y-6">
+                                {/* Filters Row */}
+                                <div className="glass-panel p-4 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                    <div className="relative flex-grow max-w-md">
+                                        <i data-lucide="search" className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                                        <input 
+                                            type="text" placeholder="Cari deskripsi transaksi..." value={searchQuery} onChange={(e)=>setSearchQuery(e.target.value)}
+                                            className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-xs font-medium text-slate-200 focus:outline-none focus:border-neonCyan transition-all"
+                                        />
+                                    </div>
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <select value={filterType} onChange={(e)=>setFilterType(e.target.value)} className="bg-white/5 border border-white/10 rounded-xl p-2 text-xs text-slate-200 focus:outline-none font-medium">
+                                            <option value="Semua" className="bg-darkBg">Semua Tipe</option>
+                                            <option value="pemasukan" className="bg-darkBg">Pemasukan</option>
+                                            <option value="pengeluaran" className="bg-darkBg">Pengeluaran</option>
+                                        </select>
+                                        <button onClick={()=>simulateExport('pdf')} className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300 transition-all"><i data-lucide="file-text" className="w-3.5 h-3.5 text-red-400"></i> Export PDF</button>
+                                        <button onClick={()=>simulateExport('excel')} className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-slate-300 transition-all"><i data-lucide="file-spreadsheet" className="w-3.5 h-3.5 text-emerald-400"></i> Excel</button>
+                                    </div>
+                                </div>
+
+                                {/* Table Area */}
+                                <div className="glass-panel rounded-2xl overflow-hidden border border-white/5">
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr className="border-b border-white/5 bg-white/[0.02] text-[10px] uppercase font-bold tracking-widest text-slate-400">
+                                                    <th className="p-4">Tanggal</th>
+                                                    <th className="p-4">Kategori</th>
+                                                    <th className="p-4">Catatan / Keterangan</th>
+                                                    <th className="p-4">Tipe</th>
+                                                    <th className="p-4 text-right">Nominal</th>
+                                                    <th className="p-4 text-center">Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-white/5 text-xs font-medium">
+                                                {transactions
+                                                    .filter(t => {
+                                                        const matchSearch = t.note.toLowerCase().includes(searchQuery.toLowerCase()) || t.category.toLowerCase().includes(searchQuery.toLowerCase());
+                                                        const matchType = filterType === 'Semua' || t.type === filterType;
+                                                        return matchSearch && matchType;
+                                                    })
+                                                    .map(t => (
+                                                        <tr key={t.id} className="hover:bg-white/[0.02] transition-colors group">
+                                                            <td className="p-4 font-mono text-slate-400">{t.date}</td>
+                                                            <td className="p-4"><span className="px-2 py-1 rounded-md bg-white/5 text-slate-300 border border-white/5">{t.category}</span></td>
+                                                            <td className="p-4 text-slate-200 font-semibold">{t.note || '-'}</td>
+                                                            <td className="p-4">
+                                                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${t.type === 'pemasukan' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
+                                                                    {t.type}
+                                                                </span>
+                                                            </td>
+                                                            <td className={`p-4 text-right font-bold font-mono text-sm ${t.type === 'pemasukan' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                                                                {t.type === 'pemasukan' ? '+' : '-'}{formatRupiah(t.amount)}
+                                                            </td>
+                                                            <td className="p-4">
+                                                                <div className="flex justify-center gap-1.5 opacity-40 group-hover:opacity-100 transition-opacity">
+                                                                    <button onClick={() => handleEditTx(t)} className="p-1 hover:bg-white/10 rounded text-neonCyan"><i data-lucide="edit-3" className="w-4 h-4"></i></button>
+                                                                    <button onClick={() => handleDeleteTx(t.id)} className="p-1 hover:bg-white/10 rounded text-red-400"><i data-lucide="trash-2" className="w-4 h-4"></i></button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    {transactions.length === 0 && <p className="text-sm text-center text-slate-500 py-10">Tidak ditemukan records riwayat transaksi.</p>}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* --- PAGE: LAPORAN ANALISIS --- */}
+                        {activeTab === 'Laporan' && (
+                            <div className="space-y-8">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="glass-panel p-6 rounded-2xl flex flex-col justify-between items-center bg-darkCard/40">
+                                        <div className="w-full text-left mb-4">
+                                            <h4 className="text-base font-bold text-white">Komposisi Transaksi Finansial</h4>
+                                            <p className="text-xs text-slate-400">Perbandingan persentase total arus dana.</p>
+                                        </div>
+                                        <div className="w-64 h-64 relative">
+                                            <PieChartContainer totalPemasukan={totalPemasukan} totalPengeluaran={totalPengeluaran} />
+                                        </div>
+                                    </div>
+
+                                    <div className="glass-panel p-6 rounded-2xl flex flex-col justify-between space-y-4">
+                                        <div>
+                                            <h4 className="text-base font-bold text-white mb-1">Analisis Pengeluaran Pintar</h4>
+                                            <p className="text-xs text-slate-400">Review status efisiensi finansial otomatis.</p>
+                                        </div>
+                                        <div className="p-4 rounded-xl border border-white/5 bg-white/5 space-y-3">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 rounded-xl bg-neonPurple/10 text-neonPurple"><i data-lucide="shield-check" className="w-5 h-5"></i></div>
+                                                <div>
+                                                    <h5 className="text-xs font-bold text-slate-200 uppercase tracking-wide">Rasio Tabungan Aman</h5>
+                                                    <p className="text-sm font-semibold text-slate-400 mt-0.5">Rasio pengeluaran Anda saat ini berada pada tingkatan proporsional aman.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="border-t border-white/5 pt-4 space-y-2 text-xs">
+                                            <div className="flex justify-between"><span className="text-slate-400">Total Terhemat Bersih:</span> <span className="font-bold text-emerald-400 font-mono">{formatRupiah(totalSaldo)}</span></div>
+                                            <div className="flex justify-between"><span className="text-slate-400">Efisiensi Konsumsi:</span> <span className="font-bold text-neonCyan font-mono">{totalPemasukan > 0 ? Math.round((totalSaldo/totalPemasukan)*100) : 0}% Dana Tersimpan</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* --- PAGE: PENGATURAN --- */}
+                        {activeTab === 'Pengaturan' && (
+                            <div className="glass-panel p-6 rounded-2xl max-w-xl mx-auto space-y-6">
+                                <h4 className="text-base font-bold text-white mb-2">Konfigurasi Pengaturan Aplikasi</h4>
+                                <div className="space-y-4 text-xs font-medium">
+                                    <div className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
+                                        <div>
+                                            <p className="text-slate-200 font-bold">Simpan Data Otomatis LocalStorage</p>
+                                            <p className="text-[10px] text-slate-400 mt-0.5">Menyimpan data mutasi langsung pada memori browser.</p>
+                                        </div>
+                                        <span className="text-xs font-bold font-mono text-emerald-400">AKTIF / TRUE</span>
+                                    </div>
+                                    <div className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
+                                        <div>
+                                            <p className="text-slate-200 font-bold">Clear All System Database</p>
+                                            <p className="text-[10px] text-slate-400 mt-0.5">Menghapus seluruh rekaman riwayat transaksi awal.</p>
+                                        </div>
+                                        <button 
+                                            onClick={() => {
+                                                if(confirm('Apakah Anda yakin ingin menghapus seluruh data transaksi?')) {
+                                                    localStorage.clear();
+                                                    setTransactions([]);
+                                                    setTargets([]);
+                                                    setWishlist([]);
+                                                    showToast('Semua database dibersihkan!', 'error');
+                                                }
+                                            }}
+                                            className="px-3 py-1.5 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 font-bold uppercase text-[10px] hover:bg-red-500/40 transition-all"
+                                        >
+                                            Wipe Out Data
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                    </main>
+
+                    {/* FOOTER WIDGET */}
+                    <footer className="relative z-10 glass-panel border-t border-white/5 py-6 text-center text-xs text-slate-500 font-medium tracking-wide">
+                        &copy; 2026 Tabunganku Inc. Built with Premium Cyber UI/UX System Ecosystem. All rights reserved.
+                    </footer>
+
+                </div>
+            );
+        }
+
+        // --- SUB-COMPONENT: LINE/BAR FINANCIAL CHART CONTAINER ---
+        function ChartContainer({ transactions }) {
+            const canvasRef = useRef(null);
+            const chartInstance = useRef(null);
+
+            useEffect(() => {
+                if (!canvasRef.current) return;
+                const ctx = canvasRef.current.getContext('2d');
+                
+                // Grouping Logic simple
+                const sortedTxs = [...transactions].reverse().slice(-7);
+                const labels = sortedTxs.map(t => t.date);
+                const dataIn = sortedTxs.map(t => t.type === 'pemasukan' ? t.amount : 0);
+                const dataOut = sortedTxs.map(t => t.type === 'pengeluaran' ? t.amount : 0);
+
+                if (chartInstance.current) { chartInstance.current.destroy(); }
+
+                chartInstance.current = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels.length > 0 ? labels : ['Day 1', 'Day 2', 'Day 3'],
+                        datasets: [
+                            {
+                                label: 'Masuk',
+                                data: dataIn.length > 0 ? dataIn : [0,0,0],
+                                borderColor: '#00f2fe',
+                                borderWidth: 3,
+                                tension: 0.4,
+                                fill: false,
+                                pointBackgroundColor: '#00f2fe'
+                            },
+                            {
+                                label: 'Keluar',
+                                data: dataOut.length > 0 ? dataOut : [0,0,0],
+                                borderColor: '#7f00ff',
+                                borderWidth: 3,
+                                tension: 0.4,
+                                fill: false,
+                                pointBackgroundColor: '#7f00ff'
                             }
-                        });
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10 } } },
+                            x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 10 } } }
+                        }
                     }
                 });
-            });
-        });
 
-        // --- 3. THREE.JS 3D FRIENDLY ROBOT AI GENERATOR ---
-        const container3D = document.getElementById('robot-container-3d');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(40, container3D.clientWidth / container3D.clientHeight, 0.1, 100);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                return () => { if (chartInstance.current) chartInstance.current.destroy(); };
+            }, [transactions]);
 
-        renderer.setSize(container3D.clientWidth, container3D.clientHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        container3D.appendChild(renderer.domElement);
-
-        // Building the Robot Mechanics using Primitive Meshes
-        const robotGroup = new THREE.Group();
-
-        // Main Head Capsule
-        const headGeo = new THREE.SphereGeometry(1, 32, 32);
-        headGeo.scale(1, 0.85, 0.9); // Make it slightly wider and friendly
-        const metalMat = new THREE.MeshStandardMaterial({ color: 0x0f1123, roughness: 0.2, metalness: 0.8 });
-        const headMesh = new THREE.Mesh(headGeo, metalMat);
-        robotGroup.add(headMesh);
-
-        // Friendly Digital Eyes Screen (Visor)
-        const visorGeo = new THREE.BoxGeometry(1.3, 0.3, 0.3);
-        const visorMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff });
-        const visorMesh = new THREE.Mesh(visorGeo, visorMat);
-        visorMesh.position.set(0, 0.05, 0.75);
-        robotGroup.add(visorMesh);
-
-        // Left & Right Cyber Ears Antenna
-        const earGeo = new THREE.CylinderGeometry(0.1, 0.1, 0.4, 16);
-        const earMat = new THREE.MeshStandardMaterial({ color: 0x1d2142, metalness: 0.7 });
-        const leftEar = new THREE.Mesh(earGeo, earMat);
-        leftEar.rotation.z = Math.PI / 2;
-        leftEar.position.set(-1.05, 0.05, 0);
-        const rightEar = leftEar.clone();
-        rightEar.position.x = 1.05;
-        robotGroup.add(leftEar); robotGroup.add(rightEar);
-
-        scene.add(robotGroup);
-        camera.position.z = 4.8;
-
-        // Dynamic Stage Lighting Setup
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
-        scene.add(ambientLight);
-
-        const pointCyan = new THREE.PointLight(0x00f0ff, 2, 30);
-        pointCyan.position.set(2, 3, 4);
-        scene.add(pointCyan);
-
-        const pointPurple = new THREE.PointLight(0x9d00ff, 1.5, 30);
-        pointPurple.position.set(-2, -2, 2);
-        scene.add(pointPurple);
-
-        // Floating Idle Render Loop Animation
-        let timeClock = new THREE.Clock();
-        function renderSceneLoop() {
-            requestAnimationFrame(renderSceneLoop);
-            let time = timeClock.getElapsedTime();
-
-            // Floating Hover / Idle Movement Smooth Wave Simulation
-            robotGroup.position.y = Math.sin(time * 1.5) * 0.12;
-            robotGroup.rotation.y = Math.cos(time * 0.5) * 0.08;
-            
-            // Random Visor Screen Interaction Simulation (Blink Engine)
-            if (Math.random() > 0.985) {
-                visorMat.color.setHex(0x0a0a14); // Blinks off
-                setTimeout(() => visorMat.color.setHex(0x00f0ff), 80);
-            }
-
-            renderer.render(scene, camera);
-        }
-        renderSceneLoop();
-
-        // Responsive Resizing Redraw Trigger
-        window.addEventListener('resize', () => {
-            camera.aspect = container3D.clientWidth / container3D.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container3D.clientWidth, container3D.clientHeight);
-        });
-
-        // --- 4. TEXT TYPING ANIMATION MACHINE ---
-        const messageText = "Coding Nusantara adalah komunitas developer Indonesia yang berfokus pada belajar coding, sharing project, dan membangun masa depan teknologi bersama.";
-        let charCursor = 0;
-        
-        function executeParagraphTyping() {
-            if (charCursor < messageText.length) {
-                document.getElementById("typing-paragraph").innerHTML += messageText.charAt(charCursor);
-                charCursor++;
-                setTimeout(executeParagraphTyping, 25);
-            }
+            return <canvas ref={canvasRef}></canvas>;
         }
 
-        // --- 5. INTERACTIVE CURSOR TRAIL MATRIX ---
-        const trailCursor = document.getElementById('trail-cursor');
-        window.addEventListener('mousemove', (e) => {
-            gsap.to(trailCursor, {
-                x: e.clientX,
-                y: e.clientY,
-                duration: 0.1
-            });
-        });
+        // --- SUB-COMPONENT: PIE CHART LAPORAN CONTAINER ---
+        function PieChartContainer({ totalPemasukan, totalPengeluaran }) {
+            const canvasRef = useRef(null);
+            const chartInstance = useRef(null);
 
-        // Expand cursor dynamic radius on entering active hover bounds
-        document.querySelectorAll('a, button').forEach(button => {
-            button.addEventListener('mouseenter', () => {
-                trailCursor.style.width = '35px';
-                trailCursor.style.height = '35px';
-                trailCursor.style.borderColor = '#9d00ff';
-            });
-            button.addEventListener('mouseleave', () => {
-                trailCursor.style.width = '20px';
-                trailCursor.style.height = '20px';
-                trailCursor.style.borderColor = '#00f0ff';
-            });
-        });
+            useEffect(() => {
+                if (!canvasRef.current) return;
+                const ctx = canvasRef.current.getContext('2d');
+
+                if (chartInstance.current) { chartInstance.current.destroy(); }
+
+                chartInstance.current = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Pemasukan', 'Pengeluaran'],
+                        datasets: [{
+                            data: [totalPemasukan || 1, totalPengeluaran || 0],
+                            backgroundColor: ['#00f2fe', '#7f00ff'],
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } }
+                    }
+                });
+
+                return () => { if (chartInstance.current) chartInstance.current.destroy(); };
+            }, [totalPemasukan, totalPengeluaran]);
+
+            return <canvas ref={canvasRef}></canvas>;
+        }
+
+        // Render Application Initializer
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
